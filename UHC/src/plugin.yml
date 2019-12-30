@@ -1,0 +1,20 @@
+name: VaultyUHC
+author: Izmoqwy
+version: SNAPSHOT-1.0.0
+
+main: eu.izmoqwy.uhc.VaultyUHC
+depend:
+  - VaultyCore
+
+commands:
+  composer:
+    description: Configurer la partie et la lancer
+    aliases:
+      - comp
+      - compo
+  uhc:
+    description: Commande principale du plugin UHC
+  host:
+    description: Gérer l'host
+    aliases:
+      - h

@@ -1,0 +1,5 @@
+name: VaultyCore
+author: Izmoqwy
+version: SNAPSHOT-1.0.0
+
+main: eu.izmoqwy.vaulty.VaultyCore

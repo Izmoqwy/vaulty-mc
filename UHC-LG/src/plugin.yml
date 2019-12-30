@@ -1,0 +1,15 @@
+name: VaultyUHC-LG
+author: Izmoqwy
+version: SNAPSHOT-1.0.0
+
+main: eu.izmoqwy.wwuhc.WerewolfUHC
+depend:
+  - VaultyCore
+  - VaultyUHC
+
+commands:
+  werewolf:
+    description: Commande Loup-Garou
+    aliases:
+      - ww
+      - lg

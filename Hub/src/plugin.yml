@@ -1,0 +1,24 @@
+name: VaultyHub
+author: Izmoqwy
+version: SNAPSHOT-1.0.0
+
+main: eu.izmoqwy.vaultyhub.VaultyHub
+depend:
+  - VaultyCore
+
+commands:
+  rank:
+    description: Gestion des grades sur le serveur
+    aliases:
+      - ranks
+  lobby:
+    description: Retourner au lobby
+    aliases:
+      - hub
+      - spawn
+  kick:
+    description: Expulser un joueur du serveur
+  ban:
+    description: Bannir un joueur du serveur
+  unban:
+    description: Debannir un joueur du serveur
