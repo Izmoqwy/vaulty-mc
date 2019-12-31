@@ -73,11 +73,13 @@ public abstract class Role {
 				PlayerUtil.clearEffect(player, previousEffect);
 			}
 		}
+
 		WWGameType werewolf = (WWGameType) GameManager.get.getCurrentComposer().getGameType();
-		if (werewolf.getProtectedPlayer() == player.getUniqueId())
+		if (player.getUniqueId().equals(werewolf.getProtectedPlayer()))
 			PlayerUtil.giveEffect(player, PotionEffectType.DAMAGE_RESISTANCE, (short) 0, (short) 20000, true);
-		else if (werewolf.getLastProtectedPlayer() == player.getUniqueId())
+		else if (player.getUniqueId().equals(werewolf.getLastProtectedPlayer()))
 			PlayerUtil.clearEffect(player, PotionEffectType.DAMAGE_RESISTANCE);
+
 		if (currentEffects != null) {
 			for (PotionEffectType currentEffect : currentEffects) {
 				PlayerUtil.giveEffect(player, currentEffect, (short) 0, (short) 20000, true);

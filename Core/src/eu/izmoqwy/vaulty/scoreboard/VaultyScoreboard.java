@@ -12,7 +12,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class VaultyScoreboard {
 
@@ -131,5 +133,23 @@ public class VaultyScoreboard {
 		}
 		playerList = null;
 		teams = null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof VaultyScoreboard)) return false;
+		VaultyScoreboard that = (VaultyScoreboard) o;
+		return Objects.equals(scoreboard, that.scoreboard) &&
+				Objects.equals(objective, that.objective) &&
+				Objects.equals(playerList, that.playerList) &&
+				Arrays.equals(teams, that.teams);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(scoreboard, objective, playerList);
+		result = 31 * result + Arrays.hashCode(teams);
+		return result;
 	}
 }

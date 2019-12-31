@@ -198,6 +198,7 @@ public class UHCWorldPreGenerator {
 			long duration = System.currentTimeMillis() - start;
 			logger.info("Génération terminée. Temps total: " + TimeUtil.fromSeconds((int) (duration / 1000)) + " (" + duration + "ms)");
 			AsyncCatcher.enabled = asyncCatcher;
+			running = false;
 
 			if (remaining < 1) {
 				working = false;

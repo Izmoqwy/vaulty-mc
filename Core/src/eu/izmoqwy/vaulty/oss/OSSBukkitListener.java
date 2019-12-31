@@ -53,7 +53,7 @@ public class OSSBukkitListener implements Listener {
 		Rank rank = VaultyRank.get(event.getPlayer());
 		String formatted = rank.getFullName() + event.getPlayer().getName() + " §8➾ " + rank.getColor() + event.getMessage();
 		getServer(event.getPlayer()).getOnlinePlayers().forEach(player -> player.sendMessage(formatted));
-		VaultyCore.getInstance().getLogger().info("[Chat] (" + getServer(event.getPlayer()).getName() + ") " + event.getPlayer().getName() + ": " + event.getMessage());
+		Bukkit.getLogger().info("[Chat] (" + getServer(event.getPlayer()).getName() + ") " + event.getPlayer().getName() + ": " + event.getMessage());
 	}
 
 }

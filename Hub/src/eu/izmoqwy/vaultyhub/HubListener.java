@@ -6,12 +6,12 @@
 package eu.izmoqwy.vaultyhub;
 
 import eu.izmoqwy.vaulty.VaultyCore;
-import eu.izmoqwy.vaultyhub.moderation.Moderation;
 import eu.izmoqwy.vaulty.oss.OSS;
 import eu.izmoqwy.vaulty.oss.ServerSlice;
 import eu.izmoqwy.vaulty.rank.Rank;
 import eu.izmoqwy.vaulty.rank.VaultyRank;
 import eu.izmoqwy.vaulty.utils.PlayerUtil;
+import eu.izmoqwy.vaultyhub.moderation.Moderation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -64,14 +64,23 @@ public class HubListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncChat(AsyncPlayerChatEvent event) {
 		if (event.getMessage().startsWith("*") && event.getMessage().length() > 1 && VaultyRank.get(event.getPlayer()).isEqualsOrAbove(Rank.HELPER)) {
+			event.setCancelled(true);
+
+			Bukkit.getLogger().info("[Staff] " + event.getPlayer().getName() + ": " + event.getMessage().substring(1).trim());
 			Rank rank = VaultyRank.get(event.getPlayer());
-			String message = "§7[Staff] " + rank.getFullName() + " " + event.getPlayer().getName() + "§8: §b" + event.getMessage().substring(1).trim();
+			String message = "§7[Staff] " + rank.getFullName() + event.getPlayer().getName() + "§8: §b" + event.getMessage().substring(1).trim();
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (VaultyRank.get(player).isBelow(Rank.HELPER))
 					continue;
 				player.sendMessage(message);
 			}
+			return;
+		}
+
+		if (Moderation.getModeration().isMuted(event.getPlayer())) {
 			event.setCancelled(true);
+
+			Moderation.getModeration().sendMuteMessages(event.getPlayer(), VaultyCore.PREFIX + "§cVous êtes toujours muet.");
 		}
 	}
 

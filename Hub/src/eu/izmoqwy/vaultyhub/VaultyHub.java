@@ -6,15 +6,15 @@
 package eu.izmoqwy.vaultyhub;
 
 import eu.izmoqwy.vaulty.builder.ItemBuilder;
-import eu.izmoqwy.vaultyhub.commands.LobbyCommand;
-import eu.izmoqwy.vaultyhub.commands.RankCommand;
-import eu.izmoqwy.vaultyhub.moderation.BanCommand;
-import eu.izmoqwy.vaultyhub.moderation.KickCommand;
 import eu.izmoqwy.vaulty.nms.NMS;
 import eu.izmoqwy.vaulty.oss.OSS;
 import eu.izmoqwy.vaulty.oss.ServerListener;
 import eu.izmoqwy.vaulty.utils.PlayerUtil;
 import eu.izmoqwy.vaulty.utils.ServerUtil;
+import eu.izmoqwy.vaultyhub.commands.HelpOpCommand;
+import eu.izmoqwy.vaultyhub.commands.LobbyCommand;
+import eu.izmoqwy.vaultyhub.commands.RankCommand;
+import eu.izmoqwy.vaultyhub.moderation.*;
 import eu.izmoqwy.vaultyhub.world.VoidWorldGenerator;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -35,8 +35,8 @@ public class VaultyHub extends JavaPlugin {
 		spawn = new Location(world, -8.5, 67.1, -0.5);
 
 		ServerUtil.registerListeners(this, new HubListener());
-		ServerUtil.registerCommands(new RankCommand(), new LobbyCommand());
-		ServerUtil.registerCommands(new KickCommand(), new BanCommand());
+		ServerUtil.registerCommands(new RankCommand(), new LobbyCommand(), new HelpOpCommand());
+		ServerUtil.registerCommands(new KickCommand(), new BanCommand(), new UnBanCommand(), new MuteCommand(), new UnMuteCommand());
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			teleport(player);

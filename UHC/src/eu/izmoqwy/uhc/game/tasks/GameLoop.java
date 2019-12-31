@@ -97,7 +97,7 @@ public class GameLoop extends BukkitRunnable {
 		if (alternateScoreboard.size() > 0 && ((currentScoreboard == scoreboard && elapsedTime % alternateScoreboardTimer == 0) || (elapsedTime % alternateScoreboardDuration == 0))) {
 			game.getOnlinePlayers().forEach(currentScoreboard::removePlayer);
 			game.getOnlineSpectators().forEach(currentScoreboard::removePlayer);
-			currentScoreboard = alternateScoreboard.get(alternateScoreboard.size() - 1) == currentScoreboard ?
+			currentScoreboard = alternateScoreboard.get(alternateScoreboard.size() -1) == currentScoreboard ?
 					scoreboard : (currentScoreboard == scoreboard ? alternateScoreboard.get(0) : alternateScoreboard.get(alternateScoreboard.indexOf(currentScoreboard) % alternateScoreboard.size()));
 			game.getOnlinePlayers().forEach(currentScoreboard::addPlayer);
 			game.getOnlineSpectators().forEach(currentScoreboard::addPlayer);

@@ -683,7 +683,7 @@ public class WWGameType extends GameType implements UHCListener {
 		if (hasRole(player, RoleAncient.class)) {
 			RoleAncient roleAncient = (RoleAncient) getRole(player).getRootRole();
 			if (roleAncient.canRevive()) {
-				roleAncient.revive(player, killer != null && getRole(player) != null && getRole(player).getRoleSide() == RoleSide.WEREWOLF);
+				roleAncient.revive(player, killer != null && getRole(killer) != null && getRole(killer).getRoleSide() == RoleSide.WEREWOLF);
 				GameManager.get.randomTeleport(player, .6f, 40);
 				roleAncient.onDayCycle(player, customDayCycle.getDayCycle(), customDayCycle.getDayCycle());
 				return;
@@ -900,15 +900,15 @@ public class WWGameType extends GameType implements UHCListener {
 				}
 			}
 
-			checkMotherCub(player);
-			if (loverDeath != null && loverRole != null) {
-				checkMotherCub(loverDeath);
-			}
-
 			if (killedByThief.contains(player.getUniqueId())) {
 				steal(player, role, maxHealth, RoleThief.class, loverDeath != null && thiefStoleCouple ? loverDeath : null);
 				checkForWin();
 				return;
+			}
+
+			checkMotherCub(player);
+			if (loverDeath != null && loverRole != null) {
+				checkMotherCub(loverDeath);
 			}
 
 			mayPostSteal(player, role, maxHealth);

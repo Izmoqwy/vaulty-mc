@@ -38,6 +38,11 @@ public class VaultyUHC extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		if (getServer().getMotd() == null || !getServer().getMotd().equals("vaulty")) {
+			Bukkit.shutdown();
+			return;
+		}
+
 		VaultyUHC.instance = this;
 
 		ServerUtil.registerListeners(this,

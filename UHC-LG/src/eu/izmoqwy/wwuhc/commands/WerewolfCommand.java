@@ -84,7 +84,7 @@ public class WerewolfCommand extends VaultyCommand {
 				werewolf.sendToWolves(message);
 				Map.Entry<UUID, Role> littleGirl = werewolf.getAssignedRole(RoleLittleGirl.class);
 				if (littleGirl != null && !littleGirl.getValue().isInfected() && Bukkit.getPlayer(littleGirl.getKey()) != null)
-					Bukkit.getPlayer(littleGirl.getKey()).sendMessage(message);
+					Bukkit.getPlayer(littleGirl.getKey()).sendMessage("§6[Loup-Garou] §k_censure_§6: §e" + TextUtil.getFinalArg(args, 1));
 			}
 			else if (match(args, 0, "don", "give")) {
 				checkArgument(werewolf.getCouple() != null && werewolf.getCouple().contains(player.getUniqueId()), "Vous n'êtes pas en couple.");
@@ -165,6 +165,7 @@ public class WerewolfCommand extends VaultyCommand {
 			}
 			else if (match(args, 0, "vote", "voter")) {
 				checkArgument(werewolf.areRolesGiven(), "Les rôles n'ont pas encore été attribués !");
+				checkArgument(werewolf.getRoleMap().containsKey(player.getUniqueId()), "Vous n'avez pas de pouvoir d'action dans la partie (pas de rôle) !");
 				checkArgument(werewolf.getVotes() != null, "Les votes ne sont pas ouverts !");
 				checkArgument(!werewolf.getAlreadyVoted().contains(player.getUniqueId()), "Vous avez déjà voté !");
 				checkArgument(werewolf.getVoteForbidden() == null || !werewolf.getVoteForbidden().contains(player.getUniqueId()), "§cVous ne pouvez pas voter.");
@@ -184,6 +185,7 @@ public class WerewolfCommand extends VaultyCommand {
 				missingArg(args, 1, "Joueur à protéger");
 				OfflinePlayer target = PlayerUtil.getOfflinePlayer(args[1]);
 				checkArgument(target != null && werewolf.getRole(target) != null, "Ce joueur n'est pas dans la partie.");
+				checkArgument(werewolf.getProtectedPlayer() != null, "Vous avez déjà protégé un joueur.");
 				checkArgument(werewolf.getLastProtectedPlayer() != target.getUniqueId(), "Vous ne pouvez pas protéger la même personne deux jours de suite.");
 
 				werewolf.setProtectedPlayer(target.getUniqueId());

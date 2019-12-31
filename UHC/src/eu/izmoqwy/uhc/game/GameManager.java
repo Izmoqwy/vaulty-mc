@@ -137,7 +137,7 @@ public class GameManager {
 			PlayerUtil.reset(player);
 		}
 
-		int radius = (int) ((currentComposer.getBorderInitialSize() * .6) / 2);
+		int radius = (int) ((currentComposer.getBorderInitialSize() * .85) / 2);
 		int totalPoints = game.getOnlinePlayers().size();
 
 		Queue<Map.Entry<Player, Location>> teleportingQueue = Queues.newArrayDeque();

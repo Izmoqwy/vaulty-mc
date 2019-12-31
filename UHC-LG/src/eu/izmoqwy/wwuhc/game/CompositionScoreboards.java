@@ -46,8 +46,11 @@ public class CompositionScoreboards {
 			return;
 
 		scoreboards.forEach(((scoreboard, roles) -> roles.forEach((line, role) -> {
+			if (scoreboard == null)
+				return;
+
 			int count = count(roleList, role);
-			if (count == 0 && !scoreboard.getLine(line).startsWith("§7"))
+			if (count == 0 && scoreboard.getLine(line) != null && !scoreboard.getLine(line).startsWith("§7"))
 				scoreboard.setScore(line, "§7§m" + scoreboard.getLine(line), count);
 			scoreboard.setScore(line, count);
 		})));

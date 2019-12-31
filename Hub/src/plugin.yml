@@ -22,3 +22,11 @@ commands:
     description: Bannir un joueur du serveur
   unban:
     description: Debannir un joueur du serveur
+  helpop:
+    description: Demander de l'aide au staff
+    aliases:
+      - question
+  mute:
+    description: Rendre muet un joueur
+  unmute:
+    description: Rendre la parole a un joueur
