@@ -115,7 +115,7 @@ public class GameComposer implements GUIConfigurable {
 			min = 60, max = 60 * 180, step = 60)
 	private int borderShrinksAt;
 	@GUISetting(group = "border", name = "Taille initiale", icon = Material.EMPTY_MAP,
-			min = 50, max = 1250, step = 25)
+			min = 50, max = 2175, step = 25)
 	private int borderInitialSize;
 	@GUISetting(group = "border", name = "Taille finale", icon = Material.EMPTY_MAP,
 			min = 50, max = 1250, step = 25)

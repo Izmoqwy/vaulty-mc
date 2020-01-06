@@ -32,4 +32,9 @@ public class RoleInfected extends Role {
 	public Role getRootRole() {
 		return from;
 	}
+
+	@Override
+	public Role getIDKHowToNameThis() {
+		return super.getIDKHowToNameThis();
+	}
 }

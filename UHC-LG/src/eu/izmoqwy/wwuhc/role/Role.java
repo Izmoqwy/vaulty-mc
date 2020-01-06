@@ -116,6 +116,10 @@ public abstract class Role {
 		return this;
 	}
 
+	public Role getIDKHowToNameThis() {
+		return this;
+	}
+
 	public boolean isApplicable(Class<? extends Role> aClass) {
 		return aClass.equals(getRootRole().getClass());
 	}

@@ -110,7 +110,7 @@ public class UHCCommand extends VaultyCommand {
 			}
 		}
 		else if (match(args, 0, "pregen")) {
-			checkArgument(VaultyRank.get(player).isEqualsOrAbove(Rank.DEVELOPER), "Vous n'avez pas la permission de faire cela !");
+			checkArgument(VaultyRank.get(player).isEqualsOrAbove(Rank.MODERATOR), "Vous n'avez pas la permission de faire cela !");
 			checkArgument(!UHCWorldPreGenerator.running, "Un monde est déjà en pré-génération.");
 
 			if (preGeneratorGUI != null)

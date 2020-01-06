@@ -20,7 +20,8 @@ import java.lang.reflect.Field;
 
 public class WorldPreGeneratorGUI extends VaultyInventory implements GUIListener, GUIConfigurable {
 
-	@GUISetting(name = "Nombre", icon = Material.GRASS)
+	@GUISetting(name = "Nombre", icon = Material.GRASS,
+			max = 10)
 	private int amount = 1;
 	private SettingValue amountSetting;
 

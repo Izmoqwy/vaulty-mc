@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class RolesGUI extends VaultyInventory implements GUIListener {
 
-	private final List<Role> availableRoles = Arrays.asList(
+	private List<Role> availableRoles = Arrays.asList(
 			// Les loups
 			new RoleWerewolf(),
 			new RoleWhiteWW(),

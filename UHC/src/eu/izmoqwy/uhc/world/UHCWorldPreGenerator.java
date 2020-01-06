@@ -181,7 +181,7 @@ public class UHCWorldPreGenerator {
 			world.save();
 
 			logger.info("Pré-chargement des chunks.... (Etape 2/3)");
-			final WorldFiller worldFiller = new WorldFiller(world, -750, 750, -750, 750);
+			final WorldFiller worldFiller = new WorldFiller(world, -1250, 1250, -1250, 1250);
 			worldFiller.generateChunks();
 			logger.info("Etape 2/3 terminée");
 

@@ -111,7 +111,7 @@ public class VaultyScoreboard {
 	}
 
 	public String getLine(int line) {
-		if (line > teams.length || line < 0)
+		if (line >= teams.length || line < 0)
 			return null;
 
 		if (teams[line] != null)

@@ -324,26 +324,28 @@ public class WWGameType extends GameType implements UHCListener {
 							if (!roleMap.containsKey(target.getUniqueId()))
 								return;
 
-							double maxHealthBoost = -10;
+							if (isOnline(target)) {
+								target.getPlayer().damage(0);
+							}
+
 							if (hasRole(target, RoleAngel.class)) {
+								setMaxHealth(target, getMaxHealth(target) + count);
 								if (count % 2 == 0)
-									maxHealthBoost = 0;
-								maxHealthBoost += count;
+									return;
 							}
 
 							double initialMaxHealth;
 							if (isOnline(target)) {
-								target.getPlayer().setMaxHealth((initialMaxHealth = target.getPlayer().getMaxHealth()) + maxHealthBoost);
-								target.getPlayer().damage(0);
+								target.getPlayer().setMaxHealth((initialMaxHealth = target.getPlayer().getMaxHealth()) - 10);
 							}
 							else {
 								UHCGhost ghost = game.getGhosts().get(target.getUniqueId());
 								if (ghost == null)
 									return;
 
-								ghost.getGhostEntity().setMaxHealth((initialMaxHealth = ghost.getGhostEntity().getMaxHealth()) + maxHealthBoost);
+								ghost.getGhostEntity().setMaxHealth((initialMaxHealth = ghost.getGhostEntity().getMaxHealth()) - 10);
 							}
-							voteTaken = new AbstractMap.SimpleEntry<>(target.getUniqueId(), initialMaxHealth + (maxHealthBoost > 0 ? maxHealthBoost : 0));
+							voteTaken = new AbstractMap.SimpleEntry<>(target.getUniqueId(), initialMaxHealth);
 
 							(voteTask = new BukkitRunnable() {
 								@Override
@@ -407,6 +409,10 @@ public class WWGameType extends GameType implements UHCListener {
 			if (ghost != null)
 				ghost.getGhostEntity().setMaxHealth(maxHealth);
 		}
+
+		if (voteTask != null && voteTaken != null && voteTaken.getKey().equals(player.getUniqueId())) {
+			voteTask.cancel();
+		}
 	}
 
 	public double getMaxHealth(OfflinePlayer player) {
@@ -435,8 +441,10 @@ public class WWGameType extends GameType implements UHCListener {
 				posText = "§eEntre §f300 §eet §f600§e blocs";
 			else if (middleDistance <= 900)
 				posText = "§eEntre §f600 §eet §f900§e blocs";
+			else if (middleDistance <= 1200)
+				posText = "§eEntre §f900 §eet §f1200§e blocs";
 			else
-				posText = "§6Plus de 900 blocs";
+				posText = "§6Plus de 1200 blocs";
 			NMS.packets.sendActionBar(player, posText + " §f§l‖ §fY: §b" + player.getLocation().getBlockY());
 		});
 
@@ -632,11 +640,11 @@ public class WWGameType extends GameType implements UHCListener {
 		Preconditions.checkNotNull(player);
 		Preconditions.checkNotNull(location);
 
-		if (waitingToRevive.containsKey(player))
+		if (waitingToRevive.containsKey(player) || !witchCanRevive)
 			return false;
 
 		Map.Entry<UUID, Role> witch = getAssignedRole(RoleWitch.class);
-		if (witch != null && witchCanRevive) {
+		if (witch != null) {
 			Player witchPlayer = Bukkit.getPlayer(witch.getKey());
 			if (witchPlayer == null)
 				return false;
@@ -894,17 +902,20 @@ public class WWGameType extends GameType implements UHCListener {
 					}
 					thereIsANewWolf(Bukkit.getOfflinePlayer(wildChild.getKey()));
 					checkForWin();
-
-					if (GameManager.get.getGameState() == GameState.ENDED)
-						return;
 				}
 			}
+
+			if (GameManager.get.getGameState() == GameState.ENDED)
+				return;
 
 			if (killedByThief.contains(player.getUniqueId())) {
 				steal(player, role, maxHealth, RoleThief.class, loverDeath != null && thiefStoleCouple ? loverDeath : null);
 				checkForWin();
 				return;
 			}
+
+			if (GameManager.get.getGameState() == GameState.ENDED)
+				return;
 
 			checkMotherCub(player);
 			if (loverDeath != null && loverRole != null) {
@@ -919,6 +930,9 @@ public class WWGameType extends GameType implements UHCListener {
 	}
 
 	private void checkMotherCub(OfflinePlayer death) {
+		Preconditions.checkNotNull(death);
+		UUID uuid = death.getUniqueId();
+
 		Map.Entry<UUID, Role> wolfMother = getAssignedRole(RoleWolfMother.class);
 		if (wolfMother == null)
 			return;
@@ -928,14 +942,16 @@ public class WWGameType extends GameType implements UHCListener {
 			return;
 
 		OfflinePlayer target = null;
-		if (cub.getKey().equals(death.getUniqueId())) {
-			target = Bukkit.getOfflinePlayer(wolfMother.getKey());
-		}
-		if (wolfMother.getKey().equals(death.getUniqueId())) {
+		if (uuid.equals(wolfMother.getKey())) {
 			target = Bukkit.getOfflinePlayer(cub.getKey());
+		}
+		else if (uuid.equals(cub.getKey())) {
+			target = Bukkit.getOfflinePlayer(wolfMother.getKey());
 		}
 
 		if (target != null) {
+			if (target.isOnline())
+				target.getPlayer().sendMessage(getPrefix() + "§5Votre liaison parentale est rompue, vous perdez donc 5 coeurs.");
 			setMaxHealth(target, getMaxHealth(target) - 10);
 		}
 	}

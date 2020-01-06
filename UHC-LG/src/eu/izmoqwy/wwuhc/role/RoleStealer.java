@@ -72,4 +72,8 @@ public abstract class RoleStealer extends Role {
 		return super.getRootRole();
 	}
 
+	@Override
+	public Role getIDKHowToNameThis() {
+		return this;
+	}
 }

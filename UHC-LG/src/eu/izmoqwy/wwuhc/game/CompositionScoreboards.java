@@ -28,9 +28,8 @@ public class CompositionScoreboards {
 			VaultyScoreboard scoreboard = new VaultyScoreboard("composition-" + i, "Composition " + (i + 1) + "/" + neededScoreboards);
 			Map<Integer, Class<? extends Role>> roles = Maps.newHashMap();
 			for (int j = 0; j < Math.min(15, distinctRoles.size() - (i * 15)); j++) {
-				int index = j + i * 15;
-				Role role = distinctRoles.get(index).getRootRole();
-				roles.put(index, role.getClass());
+				Role role = distinctRoles.get(j + i * 15).getRootRole();
+				roles.put(j, role.getClass());
 				scoreboard.setScore(j, role.getName(), count(roleList, role.getClass()));
 			}
 			scoreboards.put(scoreboard, roles);
@@ -57,7 +56,7 @@ public class CompositionScoreboards {
 	}
 
 	private int count(Collection<Role> roleList, Class<? extends Role> roleClass) {
-		return (int) roleList.stream().filter(role -> role.isApplicable(roleClass)).count();
+		return (int) roleList.stream().filter(role -> role.getIDKHowToNameThis().getClass().equals(roleClass)).count();
 	}
 
 }

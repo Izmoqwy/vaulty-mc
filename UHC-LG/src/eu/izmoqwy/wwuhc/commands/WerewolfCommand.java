@@ -237,7 +237,7 @@ public class WerewolfCommand extends VaultyCommand {
 					OfflinePlayer target = PlayerUtil.getOfflinePlayer(args[1]);
 					checkArgument(target != null && werewolf.getRole(target) != null, "Ce joueur n'est pas dans la partie.");
 					if (GameType.isOnline(target))
-						target.getPlayer().setHealth(target.getPlayer().getHealth() - 10);
+						target.getPlayer().damage(10);
 
 					send(player, "§aVous avez réalisé votre tir final.");
 					gameManager.getCurrentGame().broadcast(null);

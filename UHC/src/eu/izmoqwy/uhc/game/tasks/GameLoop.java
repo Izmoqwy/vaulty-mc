@@ -94,14 +94,25 @@ public class GameLoop extends BukkitRunnable {
 		if (game.isTeleporting())
 			return;
 
-		if (alternateScoreboard.size() > 0 && ((currentScoreboard == scoreboard && elapsedTime % alternateScoreboardTimer == 0) || (elapsedTime % alternateScoreboardDuration == 0))) {
-			game.getOnlinePlayers().forEach(currentScoreboard::removePlayer);
-			game.getOnlineSpectators().forEach(currentScoreboard::removePlayer);
-			currentScoreboard = alternateScoreboard.get(alternateScoreboard.size() -1) == currentScoreboard ?
-					scoreboard : (currentScoreboard == scoreboard ? alternateScoreboard.get(0) : alternateScoreboard.get(alternateScoreboard.indexOf(currentScoreboard) % alternateScoreboard.size()));
-			game.getOnlinePlayers().forEach(currentScoreboard::addPlayer);
-			game.getOnlineSpectators().forEach(currentScoreboard::addPlayer);
+		if (!alternateScoreboard.isEmpty()) {
+			VaultyScoreboard newSb = null;
+			if (currentScoreboard == scoreboard && elapsedTime % alternateScoreboardTimer == 0) {
+				newSb = alternateScoreboard.get(0);
+			}
+			else if (currentScoreboard != scoreboard && elapsedTime % alternateScoreboardDuration == 0) {
+				int index = alternateScoreboard.indexOf(currentScoreboard) + 1;
+				newSb = index >= alternateScoreboard.size() ? scoreboard : alternateScoreboard.get(index);
+			}
+
+			if (newSb != null) {
+				game.getOnlinePlayers().forEach(currentScoreboard::removePlayer);
+				game.getOnlineSpectators().forEach(currentScoreboard::removePlayer);
+				currentScoreboard = newSb;
+				game.getOnlinePlayers().forEach(currentScoreboard::addPlayer);
+				game.getOnlineSpectators().forEach(currentScoreboard::addPlayer);
+			}
 		}
+
 
 		updateDuration();
 		if (gameComposer.getInvincibilityStopsAt() >= elapsedTime) {
