@@ -16,8 +16,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lombok" level="project" />
     <orderEntry type="library" name="Spigot 1.8.7 (NMS v1_8_R3)" level="project" />
     <orderEntry type="module" module-name="Core" />
+    <orderEntry type="module" module-name="Core" />
+    <orderEntry type="library" name="lombok" level="project" />
   </component>
 </module>

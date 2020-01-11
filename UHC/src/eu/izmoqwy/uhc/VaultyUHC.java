@@ -7,6 +7,7 @@ package eu.izmoqwy.uhc;
 
 import eu.izmoqwy.uhc.commands.ComposerCommand;
 import eu.izmoqwy.uhc.commands.HostCommand;
+import eu.izmoqwy.uhc.commands.PregenConsoleCommand;
 import eu.izmoqwy.uhc.commands.UHCCommand;
 import eu.izmoqwy.uhc.event.UHCBukkitListener;
 import eu.izmoqwy.uhc.game.GameManager;
@@ -63,10 +64,11 @@ public class VaultyUHC extends JavaPlugin {
 		ServerUtil.registerCommands(
 				new ComposerCommand(),
 				new UHCCommand(),
-				new HostCommand()
+				new HostCommand(),
+				new PregenConsoleCommand()
 		);
 
-		GameManager.registerGameType(new TypeClassic());
+		GameManager.registerGameType(TypeClassic.class, new TypeClassic());
 		GameManager.registerScenarios(
 				new ScenarioCutClean(),
 				new ScenarioDiamondLimit(),

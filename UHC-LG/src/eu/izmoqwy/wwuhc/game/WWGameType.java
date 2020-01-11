@@ -150,6 +150,9 @@ public class WWGameType extends GameType implements UHCListener {
 		game = null;
 		rolesGUI = null;
 
+		protectedPlayer = null;
+		lastProtectedPlayer = null;
+
 		couple = null;
 		witchCanRevive = true;
 		vileCanInfect = true;
@@ -587,6 +590,10 @@ public class WWGameType extends GameType implements UHCListener {
 		}
 		role.onRoleReceive(player);
 		player.sendMessage(" ");
+
+		if (roleSide == RoleSide.WEREWOLF) {
+			player.performCommand("werewolf list");
+		}
 	}
 
 	/*
@@ -739,7 +746,7 @@ public class WWGameType extends GameType implements UHCListener {
 	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)
 	public void onPlayerReconnect(PlayerReconnectUHCEvent event) {
 		Player player = event.getPlayer();
-		if (offlineDuringRoleAnnouncement.contains(player.getUniqueId())) {
+		if (offlineDuringRoleAnnouncement.remove(player.getUniqueId())) {
 			announceRole(player);
 		}
 		if (areRolesGiven())
@@ -776,6 +783,12 @@ public class WWGameType extends GameType implements UHCListener {
 
 	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)
 	public void onDropOrPickup(PlayerDropOrPickupUHCEvent event) {
+		if (waitingToInfect.containsKey(event.getPlayer()) || waitingToRevive.containsKey(event.getPlayer()))
+			event.setCancelled(true);
+	}
+
+	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)
+	public void onInventoryClick(PlayerInventoryClickUHCEvent event) {
 		if (waitingToInfect.containsKey(event.getPlayer()) || waitingToRevive.containsKey(event.getPlayer()))
 			event.setCancelled(true);
 	}
@@ -917,9 +930,9 @@ public class WWGameType extends GameType implements UHCListener {
 			if (GameManager.get.getGameState() == GameState.ENDED)
 				return;
 
-			checkMotherCub(player);
+			checkMotherCub(player, role);
 			if (loverDeath != null && loverRole != null) {
-				checkMotherCub(loverDeath);
+				checkMotherCub(loverDeath, loverRole);
 			}
 
 			mayPostSteal(player, role, maxHealth);
@@ -927,26 +940,24 @@ public class WWGameType extends GameType implements UHCListener {
 				mayPostSteal(loverDeath, loverRole, loverMaxHealth);
 			}
 		}
+		else if (player.isOnline()) {
+			game.spectate(player.getPlayer());
+		}
 	}
 
-	private void checkMotherCub(OfflinePlayer death) {
+	private void checkMotherCub(OfflinePlayer death, Role role) {
 		Preconditions.checkNotNull(death);
-		UUID uuid = death.getUniqueId();
-
-		Map.Entry<UUID, Role> wolfMother = getAssignedRole(RoleWolfMother.class);
-		if (wolfMother == null)
-			return;
-
-		Map.Entry<UUID, Role> cub = getAssignedRole(RoleCub.class);
-		if (cub == null)
-			return;
 
 		OfflinePlayer target = null;
-		if (uuid.equals(wolfMother.getKey())) {
-			target = Bukkit.getOfflinePlayer(cub.getKey());
+		if (role.isApplicable(RoleWolfMother.class)) {
+			Map.Entry<UUID, Role> cub = getAssignedRole(RoleCub.class);
+			if (cub != null)
+				target = Bukkit.getOfflinePlayer(cub.getKey());
 		}
-		else if (uuid.equals(cub.getKey())) {
-			target = Bukkit.getOfflinePlayer(wolfMother.getKey());
+		else if (role.isApplicable(RoleCub.class)) {
+			Map.Entry<UUID, Role> mother = getAssignedRole(RoleWolfMother.class);
+			if (mother != null)
+				target = Bukkit.getOfflinePlayer(mother.getKey());
 		}
 
 		if (target != null) {

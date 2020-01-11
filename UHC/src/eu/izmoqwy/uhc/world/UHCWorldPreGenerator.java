@@ -178,7 +178,22 @@ public class UHCWorldPreGenerator {
 			}
 
 			running = true;
-			world.save();
+			while (true) {
+				try {
+					world.save();
+					break;
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+					logger.info("Nouvelle tentative de sauvegarde dans 3 secondes.");
+					try {
+						Thread.sleep(3000);
+					}
+					catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 
 			logger.info("Pré-chargement des chunks.... (Etape 2/3)");
 			final WorldFiller worldFiller = new WorldFiller(world, -1250, 1250, -1250, 1250);

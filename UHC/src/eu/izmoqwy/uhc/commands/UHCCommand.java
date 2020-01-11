@@ -132,7 +132,7 @@ public class UHCCommand extends VaultyCommand {
 		return true;
 	}
 
-	public void createGame(Player player, GameType gameType) {
+	public void createGame(Player player, Class<? extends GameType> gameTypeClass) {
 		if (!canHost(player))
 			return;
 
@@ -143,7 +143,14 @@ public class UHCCommand extends VaultyCommand {
 
 		OSS.send(player, VaultyUHC.getUhcServer());
 		GameManager gameManager = GameManager.get;
-		gameManager.createGame(player, gameType);
+		try {
+			gameManager.createGame(player, gameTypeClass);
+		}
+		catch (IllegalAccessException | InstantiationException e) {
+			e.printStackTrace();
+			send(player, "§4Erreur grave d'instanciation. Veuillez regarder la console.");
+			return;
+		}
 		gameManager.getWaitingRoom().addPlayer(player, GameActor.PLAYER, true);
 		gameManager.getWaitingRoom().updateDebugInfoState();
 		send(player, "§aVotre partie est prête.");

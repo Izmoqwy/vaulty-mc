@@ -35,6 +35,8 @@ public class ScenarioFinalHeal extends Scenario implements UHCListener, GUIConfi
 
 	@Override
 	public void onStartGame(GameManager gameManager) {
+		offlineDuringHealing.clear();
+
 		Bukkit.getScheduler().runTaskLater(VaultyUHC.getInstance(), () -> {
 			if (gameManager.getCurrentGame() == null || !gameManager.getCurrentComposer().getGameTitle().equals(GameManager.get.getCurrentComposer().getGameTitle()))
 				return;

@@ -8,6 +8,7 @@ package eu.izmoqwy.wwuhc.role.village;
 import eu.izmoqwy.wwuhc.role.Role;
 import eu.izmoqwy.wwuhc.role.RoleSide;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 public class RoleSavior extends Role {
@@ -16,5 +17,8 @@ public class RoleSavior extends Role {
 				"Chaque matin, vous pouvez donner Resistance I ainsi que l'annulation des dégâts de chute à n'importe quel joueur y compris vous. Cette personne gardera cette protection le jour et la nuit qui suivent. Vous ne pouvez pas protéger la même personne deux jours de suite.",
 				"Faîtes '/lg proteger <joueur>' protéger un joueur."
 		), new MaterialData(Material.IRON_BLOCK), RoleSide.VILLAGE);
+		this.itemStacks = new ItemStack[]{
+				new ItemStack(Material.POTION, 2, (short) 8197)
+		};
 	}
 }

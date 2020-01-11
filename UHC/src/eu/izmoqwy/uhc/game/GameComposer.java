@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -58,7 +57,8 @@ public class GameComposer implements GUIConfigurable {
 	public GameComposer(GameComposer other) {
 		gameHost = other.gameHost;
 		gameTitle = other.gameTitle;
-		gameType = other.gameType;
+		gameType = null;
+		gameTypeClass = other.gameTypeClass;
 
 		maxPlayers = other.maxPlayers;
 		chatMessages = other.chatMessages;
@@ -84,6 +84,8 @@ public class GameComposer implements GUIConfigurable {
 	protected boolean composing = true;
 
 	private GameType gameType;
+	private Class<? extends GameType> gameTypeClass;
+
 	private UUID gameHost;
 
 	private String gameTitle;

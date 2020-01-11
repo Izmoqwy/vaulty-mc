@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ServerSlice {
 
@@ -57,4 +58,17 @@ public class ServerSlice {
 		return Collections.unmodifiableCollection(onlinePlayers);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ServerSlice)) return false;
+		ServerSlice that = (ServerSlice) o;
+		return Objects.equals(name, that.name) &&
+				Objects.equals(onlinePlayers, that.onlinePlayers);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, onlinePlayers);
+	}
 }

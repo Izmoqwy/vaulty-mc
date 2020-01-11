@@ -206,6 +206,12 @@ public class UHCBukkitListener implements Listener {
 				}
 			}
 		}
+		else if (checkGameState(event.getWhoClicked(), PLAYING)) {
+			PlayerInventoryClickUHCEvent uhcEvent = new PlayerInventoryClickUHCEvent(event);
+			UHCEventManager.fireEvent(uhcEvent);
+			if (uhcEvent.isCancelled())
+				uhcEvent.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -270,16 +276,15 @@ public class UHCBukkitListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDamageEntity(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player) {
+		if (!notInGame(event.getDamager())) {
 			Player damager = (Player) event.getDamager();
 			if (damager.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) {
-
 				for (PotionEffect effect : damager.getActivePotionEffects()) {
 					if (effect.getType().equals(PotionEffectType.INCREASE_DAMAGE)) {
 						int level = effect.getAmplifier() + 1;
 						double initialDamage = event.getDamage() / (1.3 * level + 1);
 						double difference = event.getDamage() - initialDamage;
-						event.setDamage(initialDamage + (difference * 0.3));
+						event.setDamage(initialDamage + (difference * 0.45));
 						break;
 					}
 				}
@@ -293,11 +298,24 @@ public class UHCBukkitListener implements Listener {
 			return;
 		}
 
+		Player player = (Player) event.getEntity();
+		if (player.hasPotionEffect(PotionEffectType.INCREASE_DAMAGE)) {
+			for (PotionEffect effect : player.getActivePotionEffects()) {
+				if (effect.getType().equals(PotionEffectType.DAMAGE_RESISTANCE)) {
+					int level = effect.getAmplifier() + 1;
+					double initialDamage = event.getDamage() / (0.2 * level);
+					double difference = event.getDamage() - initialDamage;
+					event.setDamage(initialDamage + (difference * 0.55));
+					break;
+				}
+			}
+		}
+
 		EntityDamageEvent.DamageCause cause = event.getCause();
 		if (cause == EntityDamageEvent.DamageCause.PROJECTILE) {
-			Arrow arrow = (Arrow) event.getDamager();
-			if (arrow.getShooter() instanceof Player) {
-				PlayerDamagePlayerUHCEvent uhcEvent = new PlayerDamagePlayerUHCEvent((Player) arrow.getShooter(), (Player) event.getEntity(), cause, event.getDamage());
+			Projectile projectile = (Projectile) event.getDamager();
+			if (projectile.getShooter() instanceof Player) {
+				PlayerDamagePlayerUHCEvent uhcEvent = new PlayerDamagePlayerUHCEvent((Player) projectile.getShooter(), player, cause, event.getDamage());
 				UHCEventManager.fireEvent(uhcEvent);
 				event.setDamage(uhcEvent.getDamage());
 				if (uhcEvent.isCancelled())
@@ -308,7 +326,7 @@ public class UHCBukkitListener implements Listener {
 			if (!(event.getDamager() instanceof Player))
 				return;
 
-			PlayerDamagePlayerUHCEvent uhcEvent = new PlayerDamagePlayerUHCEvent((Player) event.getDamager(), (Player) event.getEntity(), cause, event.getDamage());
+			PlayerDamagePlayerUHCEvent uhcEvent = new PlayerDamagePlayerUHCEvent((Player) event.getDamager(), player, cause, event.getDamage());
 			UHCEventManager.fireEvent(uhcEvent);
 			event.setDamage(uhcEvent.getDamage());
 			if (uhcEvent.isCancelled())

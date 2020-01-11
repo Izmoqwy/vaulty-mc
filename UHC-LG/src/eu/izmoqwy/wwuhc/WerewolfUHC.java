@@ -22,7 +22,7 @@ public class WerewolfUHC extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		GameManager.registerGameType(new WWGameType());
+		GameManager.registerGameType(WWGameType.class, new WWGameType());
 
 		ServerUtil.registerCommands(new WerewolfCommand());
 	}

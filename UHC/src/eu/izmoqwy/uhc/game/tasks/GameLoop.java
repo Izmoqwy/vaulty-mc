@@ -64,7 +64,7 @@ public class GameLoop extends BukkitRunnable {
 		scoreboard.setLine(7, "Dégâts: ", "§cDésactivé");
 		scoreboard.setLine(8, "Limites: §b" + gameComposer.getBorderInitialSize() + "§7x§b" + gameComposer.getBorderInitialSize());
 		scoreboard.setLine(9, " ");
-		scoreboard.setLine(10, "§e§m═§r §6§lmc.", "§6§lunserveur.fr");
+		scoreboard.setLine(10, "§e§m═§r §6§lvaul", "§6§lty.minesr.com");
 		game.getOnlinePlayers().forEach(scoreboard::addPlayer);
 		game.getOnlineSpectators().forEach(scoreboard::addPlayer);
 		currentScoreboard = scoreboard;

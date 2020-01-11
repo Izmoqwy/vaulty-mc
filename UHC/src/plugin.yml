@@ -18,3 +18,5 @@ commands:
     description: Gérer l'host
     aliases:
       - h
+  pregen:
+    description: Pregenerer un monde avec la console

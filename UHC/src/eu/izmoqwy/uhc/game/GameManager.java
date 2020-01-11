@@ -7,6 +7,7 @@ package eu.izmoqwy.uhc.game;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.event.registration.UHCEventManager;
@@ -15,6 +16,7 @@ import eu.izmoqwy.uhc.game.tasks.GameLoop;
 import eu.izmoqwy.uhc.game.tasks.StartingTask;
 import eu.izmoqwy.uhc.game.tasks.TeleportingTask;
 import eu.izmoqwy.uhc.scenario.GameType;
+import eu.izmoqwy.uhc.scenario.GameTypeDetails;
 import eu.izmoqwy.uhc.scenario.Scenario;
 import eu.izmoqwy.uhc.world.UHCWorldManager;
 import eu.izmoqwy.vaulty.oss.OSS;
@@ -33,21 +35,16 @@ import java.util.*;
 public class GameManager {
 
 	@Getter
-	private static List<GameType> availableGameTypes = Lists.newArrayList();
+	private static LinkedHashMap<Class<? extends GameType>, GameTypeDetails> availableGameTypes = Maps.newLinkedHashMap();
 	@Getter
 	private static List<Scenario> availableScenarios = Lists.newArrayList();
 
-	public static void registerGameType(GameType gameType) {
-		availableGameTypes.add(gameType);
+	public static void registerGameType(Class<? extends GameType> gameTypeClass, GameTypeDetails gameTypeDetails) {
+		availableGameTypes.put(gameTypeClass, gameTypeDetails);
 	}
 
 	public static void unregisterGameType(Class<? extends GameType> gameTypeClass) {
-		for (GameType gameType : availableGameTypes.toArray(new GameType[0])) {
-			if (gameType.getClass().equals(gameTypeClass)) {
-				availableGameTypes.remove(gameType);
-				break;
-			}
-		}
+		availableGameTypes.remove(gameTypeClass);
 	}
 
 	public static void registerScenarios(Scenario... scenarios) {
@@ -86,14 +83,17 @@ public class GameManager {
 
 	private List<UUID> kicked = Lists.newArrayList();
 
-	public void createGame(Player host, GameType gameType) {
+	public void createGame(Player host, Class<? extends GameType> gameTypeClass) throws IllegalAccessException, InstantiationException {
 		Preconditions.checkArgument(gameState == null);
-		Preconditions.checkNotNull(gameType);
+		Preconditions.checkNotNull(gameTypeClass);
 		Preconditions.checkNotNull(host);
 
+		GameType gameType = gameTypeClass.newInstance();
+		Preconditions.checkNotNull(gameType);
+
 		GameComposer gameComposer = gameType.getDefaultComposer();
-		gameComposer.setGameType(gameType);
 		currentComposer = gameComposer.copy();
+		currentComposer.setGameType(gameType);
 		currentComposer.setGameHost(host.getUniqueId());
 
 		waitingRoom = new WaitingRoom(this);

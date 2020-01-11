@@ -13,6 +13,7 @@ import eu.izmoqwy.uhc.event.registration.UHCEventHandler;
 import eu.izmoqwy.uhc.event.registration.UHCEventPriority;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
 import eu.izmoqwy.uhc.event.world.WorldBlockBreakUHCEvent;
+import eu.izmoqwy.uhc.game.GameManager;
 import eu.izmoqwy.uhc.scenario.Scenario;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,6 +40,11 @@ public class ScenarioDiamondLimit extends Scenario implements UHCListener, GUICo
 
 	@Setter(AccessLevel.NONE)
 	private Map<UUID, Short> players = Maps.newHashMap();
+
+	@Override
+	public void onStartGame(GameManager gameManager) {
+		players.clear();
+	}
 
 	@UHCEventHandler(priority = UHCEventPriority.SCENARIO, ignoreCancelled = true)
 	public void onBlockBreakScenario(WorldBlockBreakUHCEvent event) {

@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 @Getter
-public abstract class GameType extends Scenario {
+public abstract class GameType extends GameTypeDetails {
 
 	protected GameComposer defaultComposer;
 	private final Class<? extends GameComposer> defaultComposerClass;

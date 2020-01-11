@@ -30,13 +30,13 @@ public class OSS {
 	public static void send(Player player, ServerSlice server) {
 		ServerSlice currentServer = getServer(player);
 		if (currentServer != server) {
-			if (currentServer.getOnlinePlayers().contains(player)) {
+			if (currentServer.getOnlinePlayers().contains(player))
 				currentServer.onQuit(player, false);
-				players.put(player, server);
-				server.onJoin(player, false);
-				if (VaultyCore.DEBUG)
-					dump();
-			}
+
+			players.put(player, server);
+			server.onJoin(player, false);
+			if (VaultyCore.DEBUG)
+				dump();
 		}
 	}
 

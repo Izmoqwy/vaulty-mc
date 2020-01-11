@@ -66,9 +66,24 @@ public class WorldFiller {
 						}
 					}
 
-					if (current % 5000 == 0) {
+					if (current % 2000 == 0) {
 						try {
-							getWorld().save();
+							while (true) {
+								try {
+									getWorld().save();
+									break;
+								}
+								catch (Exception ex) {
+									ex.printStackTrace();
+									log("Nouvelle tentative de sauvegarde dans 3 secondes.");
+									try {
+										Thread.sleep(3000);
+									}
+									catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+							}
 							Chunk[] arrayOfChunk;
 							for (int j = (arrayOfChunk = w.getLoadedChunks()).length, i = 0; i < j; ++i) {
 								final Chunk c = arrayOfChunk[i];

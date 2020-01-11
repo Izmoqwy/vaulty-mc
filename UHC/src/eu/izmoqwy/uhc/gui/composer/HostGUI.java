@@ -5,10 +5,11 @@
 
 package eu.izmoqwy.uhc.gui.composer;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import eu.izmoqwy.uhc.commands.UHCCommand;
 import eu.izmoqwy.uhc.game.GameManager;
-import eu.izmoqwy.uhc.scenario.GameType;
+import eu.izmoqwy.uhc.scenario.GameTypeDetails;
 import eu.izmoqwy.vaulty.builder.ItemBuilder;
 import eu.izmoqwy.vaulty.gui.GUIListener;
 import eu.izmoqwy.vaulty.gui.VaultyInventory;
@@ -17,6 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 
 public class HostGUI extends VaultyInventory {
@@ -29,8 +31,10 @@ public class HostGUI extends VaultyInventory {
 			@Override
 			public Map<Integer, ItemStack> load(Player player) {
 				Map<Integer, ItemStack> itemStackMap = Maps.newHashMap();
-				for (int i = 0; i < GameManager.getAvailableGameTypes().size(); i++) {
-					GameType gameType = GameManager.getAvailableGameTypes().get(i);
+				List<GameTypeDetails> gameTypeDetailsList = Lists.newArrayList(GameManager.getAvailableGameTypes().values());
+
+				for (int i = 0; i < gameTypeDetailsList.size(); i++) {
+					GameTypeDetails gameType = gameTypeDetailsList.get(i);
 					itemStackMap.put(i, new ItemBuilder(gameType.getIcon())
 							.name("§6" + gameType.getName())
 							.appendLore("§8Description:", "§7" + gameType.getDescription())
@@ -46,9 +50,7 @@ public class HostGUI extends VaultyInventory {
 					return;
 
 				player.closeInventory();
-
-				GameType gameType = GameManager.getAvailableGameTypes().get(slot);
-				uhcCommand.createGame(player, gameType);
+				uhcCommand.createGame(player, Lists.newArrayList(GameManager.getAvailableGameTypes().keySet()).get(slot));
 			}
 		});
 	}
