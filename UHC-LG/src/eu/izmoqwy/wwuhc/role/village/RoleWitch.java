@@ -14,7 +14,7 @@ import org.bukkit.material.MaterialData;
 public class RoleWitch extends Role {
 	public RoleWitch() {
 		super("Sorcière", createDescription(
-				"Vous disposez d'un potion de vie qui vous permet de ressusciter une personne lorsqu'elle meurt une fois dans la partie.",
+				"Vous disposez d'une potion de vie qui vous permet de ressusciter une personne lorsqu'elle meurt une fois dans la partie.",
 				"Vous pouvez vous ressusciter vous-même."
 		), new MaterialData(Material.POTION), RoleSide.VILLAGE);
 		this.itemStacks = new ItemStack[]{
