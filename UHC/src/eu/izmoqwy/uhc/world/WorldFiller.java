@@ -66,7 +66,7 @@ public class WorldFiller {
 						}
 					}
 
-					if (current % 2000 == 0) {
+					if (current % 5000 == 0) {
 						try {
 							while (true) {
 								try {

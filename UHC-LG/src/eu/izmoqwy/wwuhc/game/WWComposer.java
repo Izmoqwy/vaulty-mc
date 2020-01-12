@@ -56,7 +56,8 @@ public class WWComposer extends GameComposer {
 		this.coupleChoice = other.coupleChoice;
 		this.voteFirstDay = other.voteFirstDay;
 		this.voteLength = other.voteLength;
-		this.roles = other.roles;
+
+		this.roles = Lists.newArrayList(other.roles);
 	}
 
 	@GUISetting(group = "timer", name = "Cycle jour/nuit", icon = Material.WATCH, duration = true,

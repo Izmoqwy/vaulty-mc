@@ -77,11 +77,8 @@ public class GameComposer implements GUIConfigurable {
 		borderShrinksAt = other.borderShrinksAt;
 		borderSpeed = other.borderSpeed;
 
-		scenarios = other.scenarios;
-		composing = other.composing;
+		scenarios = Lists.newArrayList(other.scenarios);
 	}
-
-	protected boolean composing = true;
 
 	private GameType gameType;
 	private Class<? extends GameType> gameTypeClass;

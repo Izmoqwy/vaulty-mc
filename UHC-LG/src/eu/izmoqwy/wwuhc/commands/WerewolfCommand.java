@@ -19,6 +19,7 @@ import eu.izmoqwy.wwuhc.role.Role;
 import eu.izmoqwy.wwuhc.role.RoleSide;
 import eu.izmoqwy.wwuhc.role.village.*;
 import eu.izmoqwy.wwuhc.tasks.DayCycle;
+import net.minecraft.server.v1_8_R3.BiomeCache;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -185,7 +186,7 @@ public class WerewolfCommand extends VaultyCommand {
 				missingArg(args, 1, "Joueur à protéger");
 				OfflinePlayer target = PlayerUtil.getOfflinePlayer(args[1]);
 				checkArgument(target != null && werewolf.getRole(target) != null, "Ce joueur n'est pas dans la partie.");
-				checkArgument(werewolf.getProtectedPlayer() != null, "Vous avez déjà protégé un joueur.");
+				checkArgument(werewolf.getProtectedPlayer() == null, "Vous avez déjà protégé un joueur.");
 				checkArgument(werewolf.getLastProtectedPlayer() != target.getUniqueId(), "Vous ne pouvez pas protéger la même personne deux jours de suite.");
 
 				werewolf.setProtectedPlayer(target.getUniqueId());

@@ -58,7 +58,7 @@ public class WWGameType extends GameType implements UHCListener {
 	private CustomDayCycle customDayCycle;
 
 	public WWGameType() {
-		super("Loup-Garou", "Un grand classique", Material.REDSTONE, new WWComposer(WWComposer.defaultComposer), WWComposer.class);
+		super("Loup-Garou", "Un grand classique", Material.REDSTONE, WWComposer.defaultComposer, WWComposer.class);
 	}
 
 	/*
@@ -164,7 +164,6 @@ public class WWGameType extends GameType implements UHCListener {
 		postSteal = Maps.newHashMap();
 		foxUsed = 0;
 		seerSpied = false;
-		defaultComposer = new WWComposer(WWComposer.defaultComposer);
 	}
 
 	@Override
@@ -544,10 +543,18 @@ public class WWGameType extends GameType implements UHCListener {
 			rolesGUI = null;
 		}
 
+
+		List<UUID> werewolves = roleMap.entrySet().stream().filter(entry -> entry.getValue().getRoleSide() == RoleSide.WEREWOLF).map(Map.Entry::getKey).collect(Collectors.toList());
+		final String wwMessage = "§e§l‖ §6Voici la liste des loups-garous: "
+				+ werewolves.stream().map(uuid -> "§c§l" + Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.joining("§6, "));
+
 		roleMap.forEach((uuid, role) -> {
 			Player player = Bukkit.getPlayer(uuid);
 			if (player != null) {
 				announceRole(player);
+				if (role.getRoleSide() == RoleSide.WEREWOLF)
+					player.sendMessage(wwMessage);
+
 				role.onDayCycle(player, customDayCycle.getDayCycle(), customDayCycle.getDayCycle());
 			}
 			else
@@ -590,10 +597,6 @@ public class WWGameType extends GameType implements UHCListener {
 		}
 		role.onRoleReceive(player);
 		player.sendMessage(" ");
-
-		if (roleSide == RoleSide.WEREWOLF) {
-			player.performCommand("werewolf list");
-		}
 	}
 
 	/*

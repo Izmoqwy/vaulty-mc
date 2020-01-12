@@ -24,7 +24,7 @@ public class TypeClassic extends GameType implements UHCListener {
 	private UHCGame game;
 
 	public TypeClassic() {
-		super("Classique", "Aucune spécialité de jeu", Material.GOLDEN_APPLE, new GameComposer(GameComposer.defaultComposer), GameComposer.class);
+		super("Classique", "Aucune spécialité de jeu", Material.GOLDEN_APPLE, GameComposer.defaultComposer, GameComposer.class);
 	}
 
 	public void startGame(UHCGame game) {
@@ -33,7 +33,6 @@ public class TypeClassic extends GameType implements UHCListener {
 
 	public void stopGame() {
 		this.game = null;
-		defaultComposer = new GameComposer(GameComposer.defaultComposer);
 	}
 
 	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)

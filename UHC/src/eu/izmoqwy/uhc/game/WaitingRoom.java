@@ -50,8 +50,8 @@ public class WaitingRoom {
 		scoreboard.setLine(4, " ");
 		scoreboard.setLine(5, "§e§lJoueurs:");
 		updatePlayerCount();
-		scoreboard.setLine(9, " ");
-		scoreboard.setLine(10, "§e§m═§r §6§lmc.", "§6§lunserveur.fr");
+		scoreboard.setLine(9, " ");;
+		scoreboard.setLine(10, "§e§m═§r §6§lvaul", "§6§lty.minesr.com");
 	}
 
 	public void addPlayer(Player player, GameActor actorType, boolean forceTeleport) {

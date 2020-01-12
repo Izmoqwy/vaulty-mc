@@ -30,40 +30,41 @@ import java.util.Map;
 
 public class RolesGUI extends VaultyInventory implements GUIListener {
 
-	private List<Role> availableRoles = Arrays.asList(
-			// Les loups
-			new RoleWerewolf(),
-			new RoleWhiteWW(),
-			new RoleVFOW(),
-			new RoleGhostWolf(),
-			new RoleWolfMother(),
-			new RoleCub(),
-
-			// Le village
-			new RoleWildChild(),
-			new RoleLittleGirl(),
-			new RoleWitch(),
-			new RoleSeer(),
-			new RoleFox(),
-			new RoleBearTamer(),
-			new RoleAncient(),
-			new RoleHunter(),
-			new RoleAngel(),
-			new RoleSavior(),
-			new RoleDevotedServant(),
-			new RoleTeacher(),
-
-			new RoleVillager(),
-			// Les solos
-			new RoleMurderer(),
-			new RoleThief()
-	);
+	private List<Role> availableRoles;
 
 	private WWComposer gameComposer;
 	private Map<Integer, SettingsGUI> configurableRoles = Maps.newHashMap();
 
 	public RolesGUI(String title, VaultyInventory parent, WWComposer gameComposer) {
 		super(parent, title, true);
+		this.availableRoles = Arrays.asList(
+				// Les loups
+				new RoleWerewolf(),
+				new RoleWhiteWW(),
+				new RoleVFOW(),
+				new RoleGhostWolf(),
+				new RoleWolfMother(),
+				new RoleCub(),
+
+				// Le village
+				new RoleWildChild(),
+				new RoleLittleGirl(),
+				new RoleWitch(),
+				new RoleSeer(),
+				new RoleFox(),
+				new RoleBearTamer(),
+				new RoleAncient(),
+				new RoleHunter(),
+				new RoleAngel(),
+				new RoleSavior(),
+				new RoleDevotedServant(),
+				new RoleTeacher(),
+
+				new RoleVillager(),
+				// Les solos
+				new RoleMurderer(),
+				new RoleThief()
+		);
 		this.gameComposer = gameComposer;
 
 		int allowedRows = (int) Math.min(Math.ceil(availableRoles.size() / 9d), 5);

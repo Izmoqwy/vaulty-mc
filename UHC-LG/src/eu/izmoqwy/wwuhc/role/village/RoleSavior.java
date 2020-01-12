@@ -18,7 +18,7 @@ public class RoleSavior extends Role {
 				"Faîtes '/lg proteger <joueur>' protéger un joueur."
 		), new MaterialData(Material.IRON_BLOCK), RoleSide.VILLAGE);
 		this.itemStacks = new ItemStack[]{
-				new ItemStack(Material.POTION, 2, (short) 8197)
+				new ItemStack(Material.POTION, 2, (short) 16453)
 		};
 	}
 }

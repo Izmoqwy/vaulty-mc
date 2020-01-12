@@ -91,8 +91,7 @@ public class GameManager {
 		GameType gameType = gameTypeClass.newInstance();
 		Preconditions.checkNotNull(gameType);
 
-		GameComposer gameComposer = gameType.getDefaultComposer();
-		currentComposer = gameComposer.copy();
+		currentComposer = gameType.getDefaultComposer().copy();
 		currentComposer.setGameType(gameType);
 		currentComposer.setGameHost(host.getUniqueId());
 
