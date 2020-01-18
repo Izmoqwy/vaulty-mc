@@ -6,14 +6,21 @@
 package eu.izmoqwy.uhc.world;
 
 import eu.izmoqwy.uhc.VaultyUHC;
+import eu.izmoqwy.vaulty.utils.ServerUtil;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 import java.io.File;
 import java.io.IOException;
 
-public class UHCWorldManager {
+public class UHCWorldManager implements Listener {
 
 	@Getter
 	private static World uhcWorld;
@@ -25,6 +32,7 @@ public class UHCWorldManager {
 
 	private UHCWorldManager() {
 		this.preGenerator = new UHCWorldPreGenerator(new File(VaultyUHC.getInstance().getDataFolder(), "worlds"));
+		ServerUtil.registerListeners(VaultyUHC.getInstance(), this);
 	}
 
 	public boolean reset() {
@@ -56,6 +64,52 @@ public class UHCWorldManager {
 					world.getBlockAt(x, 231, y).setType(Material.BARRIER);
 					world.getBlockAt(x, 232, y).setType(Material.BARRIER);
 					world.getBlockAt(x, 233, y).setType(Material.BARRIER);
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onChunkLoad(ChunkLoadEvent event) {
+		if (event.isNewChunk() && (event.getWorld().getName().startsWith("temp_world"))) {
+			final int chunkX = event.getChunk().getX(), chunkZ = event.getChunk().getZ();
+			if (chunkX >= -6 && chunkX <= 6 && chunkZ >= -6 && chunkZ <= 6) {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						event.getChunk().getBlock(x, event.getChunk().getWorld().getHighestBlockYAt(x, z), z).setBiome(Biome.ROOFED_FOREST);
+					}
+				}
+			}
+			else {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						Block block = event.getChunk().getBlock(x, event.getChunk().getWorld().getHighestBlockYAt(x, z), z);
+
+						Biome replaceBiome;
+						switch (block.getBiome()) {
+							case OCEAN:
+								replaceBiome = Biome.FOREST;
+								break;
+							case DEEP_OCEAN:
+								replaceBiome = Biome.PLAINS;
+								break;
+							case JUNGLE:
+							case JUNGLE_EDGE:
+								replaceBiome = Biome.DESERT;
+								break;
+							case JUNGLE_HILLS:
+								replaceBiome = Biome.DESERT_HILLS;
+								break;
+							case JUNGLE_MOUNTAINS:
+							case JUNGLE_EDGE_MOUNTAINS:
+								replaceBiome = Biome.DESERT_MOUNTAINS;
+								break;
+							default:
+								continue;
+						}
+
+						block.setBiome(replaceBiome);
+					}
 				}
 			}
 		}

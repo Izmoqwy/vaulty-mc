@@ -391,6 +391,7 @@ public class UHCBukkitListener implements Listener {
 					game.getGhosts().remove(uuid);
 					game.eliminatePlayer(uuid);
 					game.getKilledGhost().add(uuid);
+					game.playerDeathSound();
 				}
 			}
 		}

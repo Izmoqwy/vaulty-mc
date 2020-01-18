@@ -17,6 +17,7 @@ import eu.izmoqwy.vaulty.utils.PlayerUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -44,11 +45,18 @@ public class UHCGame implements UHCListener {
 		return GameManager.get.getCurrentComposer();
 	}
 
+	public void playerDeathSound() {
+		for (Player onlinePlayer : onlinePlayers) {
+			onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.WITHER_DEATH, 1f, 1f);
+		}
+	}
+
 	public void eliminatePlayer(Player player) {
 		if (onlinePlayers.remove(player)) {
 			lastEliminated = player;
 			spectate(player);
 			eliminatePlayer(player.getUniqueId());
+			playerDeathSound();
 		}
 	}
 
