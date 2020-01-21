@@ -32,7 +32,7 @@ public class VaultyHub extends JavaPlugin {
 				.generator(new VoidWorldGenerator()).generateStructures(false)
 				.type(WorldType.FLAT).environment(World.Environment.NORMAL)
 		);
-		spawn = new Location(world, -8.5, 67.1, -0.5);
+		spawn = new Location(world, 0.5, 68.1, 0.5);
 
 		ServerUtil.registerListeners(this, new HubListener());
 		ServerUtil.registerCommands(new RankCommand(), new LobbyCommand(), new HelpOpCommand());
