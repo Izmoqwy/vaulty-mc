@@ -123,8 +123,8 @@ public class WorldFiller {
 
 
 					current++;
-					if (memoryUsage > 80) {
-						while (getMemoryUsage() > 60) {
+					if (memoryUsage > 90) {
+						while (getMemoryUsage() > 70) {
 							try {
 								log("en attente de mémoire (" + current + "/" + max + " - " + progress + "%) [RAM: " + memoryUsage + "%]");
 								System.gc();

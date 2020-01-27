@@ -6,8 +6,11 @@
 package eu.izmoqwy.wwuhc.role.werewolves;
 
 import com.google.common.collect.Lists;
+import eu.izmoqwy.uhc.config.GUIConfigurable;
+import eu.izmoqwy.uhc.config.GUISetting;
 import eu.izmoqwy.wwuhc.role.Role;
 import eu.izmoqwy.wwuhc.role.RoleSide;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
@@ -15,7 +18,11 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Arrays;
 import java.util.List;
 
-public class RoleWerewolf extends Role {
+@Getter
+public class RoleWerewolf extends Role implements GUIConfigurable {
+
+	@GUISetting(name = "Nombre", icon = Material.QUARTZ_ORE)
+	private int amount = 1;
 
 	public RoleWerewolf() {
 		super("Loup-Garou", createDescription(), new MaterialData(Material.IRON_SWORD), RoleSide.WEREWOLF, true);
@@ -37,4 +44,5 @@ public class RoleWerewolf extends Role {
 	private void init() {
 		this.nightlyEffects = new PotionEffectType[]{PotionEffectType.INCREASE_DAMAGE, PotionEffectType.NIGHT_VISION};
 	}
+
 }

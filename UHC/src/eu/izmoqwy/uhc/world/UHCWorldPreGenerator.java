@@ -118,11 +118,11 @@ public class UHCWorldPreGenerator {
 		replacedBiomes.clear();
 
 		Map<String, String> toReplace = Maps.newHashMap();
-		toReplace.put("Deep Ocean", "PLAINS");
-		toReplace.put("Ocean", "ROOFED_FOREST");
-		toReplace.put("Jungle", "ROOFED_FOREST");
-		toReplace.put("JungleHills", "ROOFED_FOREST");
-		toReplace.put("JungleEdge", "ROOFED_FOREST");
+		toReplace.put("Deep Ocean", "Extreme Hills Edge");
+		toReplace.put("Ocean", "PLAINS");
+		toReplace.put("Jungle", "FOREST");
+		toReplace.put("JungleHills", "ForestHills");
+		toReplace.put("JungleEdge", "FOREST");
 		toReplace.forEach((from, to) -> {
 			try {
 				int replacedId = NMS.global.replaceBiome(from, to);

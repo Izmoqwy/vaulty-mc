@@ -11,7 +11,6 @@ import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -77,38 +76,6 @@ public class UHCWorldManager implements Listener {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
 						event.getChunk().getBlock(x, event.getChunk().getWorld().getHighestBlockYAt(x, z), z).setBiome(Biome.ROOFED_FOREST);
-					}
-				}
-			}
-			else {
-				for (int x = 0; x < 16; x++) {
-					for (int z = 0; z < 16; z++) {
-						Block block = event.getChunk().getBlock(x, event.getChunk().getWorld().getHighestBlockYAt(x, z), z);
-
-						Biome replaceBiome;
-						switch (block.getBiome()) {
-							case OCEAN:
-								replaceBiome = Biome.FOREST;
-								break;
-							case DEEP_OCEAN:
-								replaceBiome = Biome.PLAINS;
-								break;
-							case JUNGLE:
-							case JUNGLE_EDGE:
-								replaceBiome = Biome.DESERT;
-								break;
-							case JUNGLE_HILLS:
-								replaceBiome = Biome.DESERT_HILLS;
-								break;
-							case JUNGLE_MOUNTAINS:
-							case JUNGLE_EDGE_MOUNTAINS:
-								replaceBiome = Biome.DESERT_MOUNTAINS;
-								break;
-							default:
-								continue;
-						}
-
-						block.setBiome(replaceBiome);
 					}
 				}
 			}

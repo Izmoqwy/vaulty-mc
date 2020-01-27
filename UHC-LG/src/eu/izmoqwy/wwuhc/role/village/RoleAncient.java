@@ -17,13 +17,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffectType;
 
+@Getter
 public class RoleAncient extends Role implements GUIConfigurable {
 
-	@Getter
 	@Accessors(fluent = true)
 	private boolean canRevive = true;
 
-	@Getter
 	@GUISetting(name = "Perte de resistance", icon = Material.IRON_TRAPDOOR)
 	private boolean looseResistanceOnRevive = true;
 
@@ -43,4 +42,5 @@ public class RoleAncient extends Role implements GUIConfigurable {
 			PlayerUtil.clearEffect(player, PotionEffectType.DAMAGE_RESISTANCE);
 		}
 	}
+
 }

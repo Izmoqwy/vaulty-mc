@@ -96,11 +96,6 @@ public class WWGameType extends GameType implements UHCListener {
 					villager.setNeeded(false);
 					roles.add(villager);
 				}
-				RoleWerewolf werewolf = new RoleWerewolf();
-				if (!roles.contains(werewolf)) {
-					werewolf.setNeeded(false);
-					roles.add(werewolf);
-				}
 
 				roleMap = RoleGiver.attribute(roles, WWGameType.this.game.getLivingPlayers());
 				WWGameType.this.onRolesGiven();
@@ -257,13 +252,17 @@ public class WWGameType extends GameType implements UHCListener {
 			stacktrace.add("Il doit y avoir au moins deux rôles");
 		}
 		else {
-			List<RoleSide> roleSides = composer.getRoles().stream().map(Role::getRoleSide).distinct().collect(Collectors.toList());
-			if (roleSides.size() <= 1) {
+			if (composer.getRoles().stream().map(Role::getRoleSide).distinct().count() <= 1) {
 				stacktrace.add("Plusieurs camps doivent être présents parmi les rôles");
 			}
 		}
 
-		if (waitingRoom.getPlayers().size() < composer.getRoles().size()) {
+		if (waitingRoom.getPlayers().size() < composer.getRoles().stream().map(role -> {
+			if (role.isApplicable(RoleWerewolf.class)) {
+				return ((RoleWerewolf) role).getAmount();
+			}
+			return 1;
+		}).mapToInt(Integer::valueOf).sum()) {
 			stacktrace.add("Il ne peut pas y avoir plus de rôles que de joueurs");
 		}
 
@@ -543,7 +542,6 @@ public class WWGameType extends GameType implements UHCListener {
 			rolesGUI = null;
 		}
 
-
 		List<UUID> werewolves = roleMap.entrySet().stream().filter(entry -> entry.getValue().getRoleSide() == RoleSide.WEREWOLF).map(Map.Entry::getKey).collect(Collectors.toList());
 		final String wwMessage = "§e§l‖ §6Voici la liste des loups-garous: "
 				+ werewolves.stream().map(uuid -> "§c§l" + Bukkit.getOfflinePlayer(uuid).getName()).collect(Collectors.joining("§6, "));
@@ -686,6 +684,12 @@ public class WWGameType extends GameType implements UHCListener {
 	public void onDeathEvent(PlayerDeathUHCEvent event) {
 		Player player = event.getPlayer();
 		event.getBukkitEvent().setDeathMessage(null);
+
+		if (!areRolesGiven()) {
+			player.spigot().respawn();
+			GameManager.get.randomTeleport(player, .8f, 40);
+			return;
+		}
 
 		if (waitingToInfect.containsKey(player)) {
 			death(player, waitingToInfect.remove(player));
@@ -1059,4 +1063,5 @@ public class WWGameType extends GameType implements UHCListener {
 		if (isOnline(player))
 			player.getPlayer().performCommand("werewolf list");
 	}
+
 }

@@ -61,6 +61,7 @@ public class RolesGUI extends VaultyInventory implements GUIListener {
 				new RoleTeacher(),
 
 				new RoleVillager(),
+
 				// Les solos
 				new RoleMurderer(),
 				new RoleThief()
