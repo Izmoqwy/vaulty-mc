@@ -53,10 +53,11 @@ public class UHCGame implements UHCListener {
 		}
 	}
 
-	public void eliminatePlayer(Player player) {
+	private void eliminatePlayer(Player player, boolean canSpec) {
 		if (onlinePlayers.remove(player)) {
 			lastEliminated = player;
-			spectate(player);
+			if (canSpec)
+				spectate(player);
 			eliminatePlayer(player.getUniqueId());
 			playerDeathSound();
 		}
@@ -85,7 +86,7 @@ public class UHCGame implements UHCListener {
 
 	public void spectate(Player player) {
 		if (onlinePlayers.contains(player)) {
-			eliminatePlayer(player);
+			eliminatePlayer(player, false);
 			return;
 		}
 
@@ -161,4 +162,5 @@ public class UHCGame implements UHCListener {
 		livingPlayers.addAll(onlinePlayers.stream().map(Entity::getUniqueId).collect(Collectors.toList()));
 		return livingPlayers;
 	}
+
 }

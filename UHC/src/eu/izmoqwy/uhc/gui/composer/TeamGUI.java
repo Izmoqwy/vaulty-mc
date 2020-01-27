@@ -1,5 +1,7 @@
 package eu.izmoqwy.uhc.gui.composer;
 
+import eu.izmoqwy.uhc.game.GameManager;
+import eu.izmoqwy.uhc.game.GameState;
 import eu.izmoqwy.uhc.game.PreMadeTeam;
 import eu.izmoqwy.uhc.game.TeamGameComposer;
 import eu.izmoqwy.uhc.game.obj.WaitingRoom;
@@ -8,6 +10,7 @@ import eu.izmoqwy.vaulty.gui.GUIListener;
 import eu.izmoqwy.vaulty.gui.VaultyInventory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,7 +39,7 @@ public class TeamGUI extends VaultyInventory implements GUIListener {
 		}
 
 		int slot = 0;
-		for (Map.Entry<PreMadeTeam, List<Player>> entry : waitingRoom.getTeams().entrySet()) {
+		for (Map.Entry<PreMadeTeam, List<OfflinePlayer>> entry : waitingRoom.getTeams().entrySet()) {
 			if ((slot + 1) >= getRows() * 9)
 				setRows(getRows() + 1);
 
@@ -44,7 +47,7 @@ public class TeamGUI extends VaultyInventory implements GUIListener {
 		}
 	}
 
-	private void updateSlot(int slot, PreMadeTeam team, List<Player> players) {
+	public void updateSlot(int slot, PreMadeTeam team, List<OfflinePlayer> players) {
 		ItemBuilder itemBuilder = new ItemBuilder(Material.BANNER)
 				.name(team.getColor() + team.getName())
 				.dyeColor(team.getDyeColor());
@@ -59,7 +62,7 @@ public class TeamGUI extends VaultyInventory implements GUIListener {
 		setItem(slot, itemBuilder.toItemStack());
 	}
 
-	private int getIndex(PreMadeTeam team) {
+	public int getIndex(PreMadeTeam team) {
 		Iterator<PreMadeTeam> itTeams = waitingRoom.getTeams().keySet().iterator();
 		for (int i = 0; itTeams.hasNext(); i++) {
 			if (team == itTeams.next())
@@ -73,22 +76,18 @@ public class TeamGUI extends VaultyInventory implements GUIListener {
 		if (clickedItem.getType() == Material.AIR)
 			return;
 
+		if (!waitingRoom.getPlayers().contains(player))
+			return;
+		if (GameManager.get.getGameState() != GameState.COMPOSING)
+			return;
+
 		PreMadeTeam team = waitingRoom.getTeam(slot);
-		List<Player> players = waitingRoom.getTeams().get(team);
+		List<OfflinePlayer> players = waitingRoom.getTeams().get(team);
 
 		if (players.size() >= gameComposer.getTeamSize() || players.contains(player))
 			return;
 
-		for (Map.Entry<PreMadeTeam, List<Player>> entry : waitingRoom.getTeams().entrySet()) {
-			PreMadeTeam itTeam = entry.getKey();
-
-			if (entry.getValue().contains(player)) {
-				waitingRoom.getTeams().get(itTeam).remove(player);
-				updateSlot(getIndex(itTeam), itTeam, waitingRoom.getTeams().get(itTeam));
-				break;
-			}
-		}
-
+		waitingRoom.removePlayerFromTeamGUI(player);
 		waitingRoom.getTeams().get(team).add(player);
 		updateSlot(slot, team, waitingRoom.getTeams().get(team));
 	}

@@ -25,6 +25,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.SkullType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +33,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class WaitingRoom {
@@ -45,15 +47,16 @@ public class WaitingRoom {
 	private List<Player> players = Lists.newArrayList(),
 			spectators = Lists.newArrayList();
 
-	private LinkedHashMap<PreMadeTeam, List<Player>> teams;
+	private LinkedHashMap<PreMadeTeam, List<OfflinePlayer>> teams;
 
 	public WaitingRoom(GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.composerGUI = new ComposerGUI(gameManager.getCurrentComposer());
 
-		if (gameManager.getCurrentComposer() instanceof TeamGameComposer)
+		if (gameManager.getCurrentComposer() instanceof TeamGameComposer) {
 			teams = Maps.newLinkedHashMap();
-		this.teamGUI = new TeamGUI((TeamGameComposer) gameManager.getCurrentComposer(), this);
+			this.teamGUI = new TeamGUI((TeamGameComposer) gameManager.getCurrentComposer(), this);
+		}
 
 		scoreboard = new VaultyScoreboard("uhc-waitingroom", gameManager.getCurrentComposer().getGameTitle());
 		scoreboard.reset(11);
@@ -80,6 +83,7 @@ public class WaitingRoom {
 		}
 		else if (actorType == GameActor.SPECTATOR && !spectators.contains(player)) {
 			players.remove(player);
+			removePlayerFromTeamGUI(player);
 			spectators.add(player);
 		}
 		if (forceTeleport || player.getWorld() != UHCWorldManager.getUhcWorld())
@@ -93,6 +97,7 @@ public class WaitingRoom {
 
 		if (players.contains(player)) {
 			players.remove(player);
+			removePlayerFromTeamGUI(player);
 			if (GameManager.get.isStarting() && GameManager.get.invalidComposition()) {
 				broadcast("§cUn joueur a quitté et la composition est désormais invalide, lancement annulé !");
 				GameManager.get.cancelStarting();
@@ -104,6 +109,18 @@ public class WaitingRoom {
 		if (getComposerGUI().getEditingInventory() == player)
 			getComposerGUI().setEditingInventory(null);
 		updatePlayerCount();
+	}
+
+	public void removePlayerFromTeamGUI(OfflinePlayer player) {
+		for (Map.Entry<PreMadeTeam, List<OfflinePlayer>> entry : getTeams().entrySet()) {
+			PreMadeTeam itTeam = entry.getKey();
+
+			if (entry.getValue().contains(player)) {
+				getTeams().get(itTeam).remove(player);
+				teamGUI.updateSlot(teamGUI.getIndex(itTeam), itTeam, getTeams().get(itTeam));
+				break;
+			}
+		}
 	}
 
 	public List<Player> getAllPlayers() {
@@ -177,7 +194,7 @@ public class WaitingRoom {
 		}
 
 		for (PreMadeTeam team : teams.keySet()) {
-			List<Player> players;
+			List<OfflinePlayer> players;
 			while ((players = teams.get(team)).size() > teamSize) {
 				teams.get(team).remove(players.size() - 1);
 			}

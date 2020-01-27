@@ -13,6 +13,7 @@ import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.event.registration.UHCEventManager;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
 import eu.izmoqwy.uhc.game.obj.UHCGame;
+import eu.izmoqwy.uhc.game.obj.UHCTeamGame;
 import eu.izmoqwy.uhc.game.obj.WaitingRoom;
 import eu.izmoqwy.uhc.game.obj.Whitelist;
 import eu.izmoqwy.uhc.game.tasks.GameLoop;
@@ -33,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class GameManager {
@@ -121,7 +123,28 @@ public class GameManager {
 
 		waitingRoom.getAllPlayers().forEach(HumanEntity::closeInventory);
 
-		UHCGame game = new UHCGame();
+		UHCGame game;
+		if (currentComposer instanceof TeamGameComposer) {
+			TeamGameComposer teamGameComposer = (TeamGameComposer) currentComposer;
+			Map<PreMadeTeam, List<OfflinePlayer>> teams = Maps.newHashMap(waitingRoom.getTeams());
+
+			List<OfflinePlayer> teamed = Lists.newArrayList();
+			teams.values().forEach(teamed::addAll);
+
+			List<OfflinePlayer> unTeamed = waitingRoom.getPlayers().stream().filter(player -> !teamed.contains(player)).collect(Collectors.toList());
+			Collections.shuffle(unTeamed);
+
+			for (PreMadeTeam team : teams.keySet()) {
+				while (!unTeamed.isEmpty() && teams.get(team).size() < teamGameComposer.getTeamSize()) {
+					teams.get(team).add(unTeamed.remove(0));
+				}
+			}
+
+			game = new UHCTeamGame(teams);
+		}
+		else
+			game = new UHCGame();
+
 		game.setTeleporting(true);
 		game.getOnlinePlayers().addAll(waitingRoom.getPlayers());
 		waitingRoom.getSpectators().forEach(game::spectate);

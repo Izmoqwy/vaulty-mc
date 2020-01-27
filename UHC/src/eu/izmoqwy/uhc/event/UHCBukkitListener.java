@@ -12,7 +12,9 @@ import eu.izmoqwy.uhc.event.player.*;
 import eu.izmoqwy.uhc.event.registration.UHCEventManager;
 import eu.izmoqwy.uhc.event.world.WorldBlockBreakUHCEvent;
 import eu.izmoqwy.uhc.event.world.WorldBlockPlaceUHCEvent;
-import eu.izmoqwy.uhc.game.*;
+import eu.izmoqwy.uhc.game.GameActor;
+import eu.izmoqwy.uhc.game.GameManager;
+import eu.izmoqwy.uhc.game.GameState;
 import eu.izmoqwy.uhc.game.obj.UHCGame;
 import eu.izmoqwy.uhc.game.obj.UHCGhost;
 import eu.izmoqwy.uhc.game.obj.WaitingRoom;
@@ -170,7 +172,6 @@ public class UHCBukkitListener implements Listener {
 	/*
 	Inventaire
 	 */
-
 	private void playerAction(Player player, ItemStack item) {
 		if (WaitingRoom.ComposingItems.CONFIG.equals(item)) {
 			GameManager.get.getWaitingRoom().getComposerGUI().open(player);
@@ -228,6 +229,11 @@ public class UHCBukkitListener implements Listener {
 				return;
 			playerAction(event.getPlayer(), event.getItem());
 		}
+		else if (checkGameState(event.getPlayer(), PLAYING)) {
+			PlayerInteractUHCEvent uhcEvent = new PlayerInteractUHCEvent(event);
+			UHCEventManager.fireEvent(uhcEvent);
+			event.setCancelled(uhcEvent.isCancelled());
+		}
 	}
 
 	/*
@@ -236,8 +242,14 @@ public class UHCBukkitListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onMove(PlayerMoveEvent event) {
-		if (checkGameState(event.getPlayer(), TELEPORTING) && isActualMove(event)) {
-			event.getPlayer().teleport(event.getFrom());
+		if (checkGameState(event.getPlayer(), TELEPORTING)) {
+			if (isActualMove(event))
+				event.getPlayer().teleport(event.getFrom());
+		}
+		else if (checkGameState(event.getPlayer(), PLAYING) && isActualMove(event)) {
+			PlayerMoveUHCEvent uhcEvent = new PlayerMoveUHCEvent(event);
+			UHCEventManager.fireEvent(uhcEvent);
+			event.setCancelled(uhcEvent.isCancelled());
 		}
 	}
 

@@ -1,0 +1,14 @@
+name: VaultyUHC-Manga
+version: 1.0.0-SNAPSHOT
+author: Izmoqwy
+
+depend:
+  - VaultyCore
+  - VaultyUHC
+main: eu.izmoqwy.mangauhc.MangaUHC
+
+commands:
+  manga:
+    description: Commande Manga
+    aliases:
+      - mg

@@ -6,6 +6,7 @@
 package eu.izmoqwy.uhc.game.obj;
 
 import com.google.common.base.Preconditions;
+import eu.izmoqwy.vaulty.utils.PlayerUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -14,6 +15,9 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+
+import java.util.Collection;
 
 @Getter
 @AllArgsConstructor
@@ -24,9 +28,11 @@ public class UHCGhost {
 	private ItemStack[] armorContents, contents;
 	private int level, totalExperience;
 	private float exp;
+	private Collection<PotionEffect> potionEffectCollection;
 
 	public static UHCGhost from(LivingEntity ghostEntity, Player player) {
-		return new UHCGhost(ghostEntity, player.getInventory().getArmorContents(), player.getInventory().getContents(), player.getLevel(), player.getTotalExperience(), player.getExp());
+		return new UHCGhost(ghostEntity, player.getInventory().getArmorContents(), player.getInventory().getContents(),
+				player.getLevel(), player.getTotalExperience(), player.getExp(), player.getActivePotionEffects());
 	}
 
 	public void apply(Player player) {
@@ -35,6 +41,11 @@ public class UHCGhost {
 		player.setLevel(level);
 		player.setTotalExperience(totalExperience);
 		player.setExp(exp);
+
+		PlayerUtil.clearEffects(player);
+		for (PotionEffect potionEffect : potionEffectCollection) {
+			player.addPotionEffect(potionEffect);
+		}
 	}
 
 	public void drop(Location location) {

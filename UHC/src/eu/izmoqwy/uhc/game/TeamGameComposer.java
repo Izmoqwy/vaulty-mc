@@ -13,8 +13,8 @@ public class TeamGameComposer extends GameComposer {
 
 	static {
 		defaultComposer = new TeamGameComposer(GameComposer.defaultComposer);
-//		defaultComposer.setTeams(true);
 		defaultComposer.setTeamSize(4);
+		defaultComposer.setTeamEditable(true);
 	}
 
 	public TeamGameComposer(GameComposer gameComposer) {
@@ -23,15 +23,15 @@ public class TeamGameComposer extends GameComposer {
 
 	public TeamGameComposer(TeamGameComposer other) {
 		super(other);
-//		this.teams = other.teams;
 		this.teamSize = other.teamSize;
+		this.teamEditable = other.teamEditable;
 	}
 
-//	@GUISetting(name = "Équipes", icon = Material.IRON_SWORD)
-//	private boolean teams;
 	@GUISetting(name = "Taille des équipes", icon = Material.CHEST,
 			min = 2, max = 6)
 	private int teamSize;
+
+	private boolean teamEditable;
 
 	@Override
 	public TeamGameComposer copy() {

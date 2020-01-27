@@ -10,7 +10,7 @@ public enum PreMadeTeam {
 	RED("Rouge", ChatColor.RED, DyeColor.RED), BLUE("Bleue", ChatColor.BLUE, DyeColor.BLUE), GREEN("Verte", ChatColor.GREEN, DyeColor.GREEN),
 	YELLOW("Jaune", ChatColor.YELLOW, DyeColor.YELLOW), AQUA("Bleue claire", ChatColor.AQUA, DyeColor.LIGHT_BLUE), ORANGE("Orange", ChatColor.GOLD, DyeColor.ORANGE),
 	PURPLE("Violette", ChatColor.DARK_PURPLE, DyeColor.PURPLE), PINK("Rose", ChatColor.LIGHT_PURPLE, DyeColor.PINK), GRAY("Grise", ChatColor.GRAY, DyeColor.GRAY),
-	DARK_GREEN("Verte foncée", ChatColor.DARK_GREEN, DyeColor.GREEN), CYAN("Cyan", ChatColor.DARK_AQUA, DyeColor.CYAN),
+	CYAN("Cyan", ChatColor.DARK_AQUA, DyeColor.CYAN), DARK_GREEN("Verte foncée", ChatColor.DARK_GREEN, DyeColor.GREEN),
 	DARK_GRAY("Grise foncée", ChatColor.DARK_GRAY, DyeColor.BLACK);
 
 	private String name;

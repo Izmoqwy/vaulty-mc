@@ -45,7 +45,7 @@ public class TypeClassic extends GameType implements UHCListener {
 				if (game == null)
 					return;
 
-				game.eliminatePlayer(event.getPlayer());
+				game.spectate(event.getPlayer());
 				checkForWin();
 			}
 		}.runTaskLater(VaultyUHC.getInstance(), 2);
@@ -83,4 +83,5 @@ public class TypeClassic extends GameType implements UHCListener {
 			GameManager.get.end();
 		}
 	}
+
 }

@@ -1,8 +1,0 @@
-name: VaultyUHC-Mole
-version: 1.0.0-SNAPSHOT
-author: Izmoqwy
-
-depend:
-  - VaultyCore
-  - VaultyUHC
-main: eu.izmoqwy.moleuhc.MoleUHC

@@ -5,7 +5,6 @@
 
 package eu.izmoqwy.vaulty.builder;
 
-
 import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -52,8 +51,13 @@ public class ItemBuilder {
 	public ItemBuilder(Enchantment bookEnchantment, int level) {
 		is = new ItemStack(Material.ENCHANTED_BOOK);
 		meta();
+		addBookEnchant(bookEnchantment, level);
+	}
+
+	public ItemBuilder addBookEnchant(Enchantment bookEnchantment, int level) {
 		EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
 		enchantMeta.addStoredEnchant(bookEnchantment, level, true);
+		return this;
 	}
 
 	private void meta() {

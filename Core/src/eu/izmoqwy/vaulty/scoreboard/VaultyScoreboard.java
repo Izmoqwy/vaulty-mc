@@ -20,7 +20,8 @@ public class VaultyScoreboard {
 
 	private static Scoreboard emptyScoreboard;
 
-	private final Scoreboard scoreboard;
+	@Getter
+	private final Scoreboard bukkitScoreboard;
 	private final Objective objective;
 
 	@Getter
@@ -29,8 +30,8 @@ public class VaultyScoreboard {
 
 	public VaultyScoreboard(String scoreboardId, String title) {
 		ScoreboardManager scoreboardManager = Bukkit.getServer().getScoreboardManager();
-		scoreboard = scoreboardManager.getNewScoreboard();
-		objective = scoreboard.registerNewObjective(scoreboardId, "dummy");
+		bukkitScoreboard = scoreboardManager.getNewScoreboard();
+		objective = bukkitScoreboard.registerNewObjective(scoreboardId, "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		if (title != null)
 			objective.setDisplayName(title);
@@ -47,7 +48,7 @@ public class VaultyScoreboard {
 	public void addPlayer(Player player) {
 		if (!playerList.contains(player))
 			playerList.add(player);
-		player.setScoreboard(scoreboard);
+		player.setScoreboard(bukkitScoreboard);
 	}
 
 	public void removePlayer(Player player) {
@@ -121,13 +122,13 @@ public class VaultyScoreboard {
 
 	private Team getOrCreate(int line) {
 		if (teams[line] == null)
-			teams[line] = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
+			teams[line] = bukkitScoreboard.registerNewTeam("text-" + bukkitScoreboard.getTeams().size());
 		return teams[line];
 	}
 
 	public void destroy() {
 		for (Player player : playerList.toArray(new Player[0])) {
-			if (player.getScoreboard() == scoreboard) {
+			if (player.getScoreboard() == bukkitScoreboard) {
 				removePlayer(player);
 			}
 		}
@@ -140,7 +141,7 @@ public class VaultyScoreboard {
 		if (this == o) return true;
 		if (!(o instanceof VaultyScoreboard)) return false;
 		VaultyScoreboard that = (VaultyScoreboard) o;
-		return Objects.equals(scoreboard, that.scoreboard) &&
+		return Objects.equals(bukkitScoreboard, that.bukkitScoreboard) &&
 				Objects.equals(objective, that.objective) &&
 				Objects.equals(playerList, that.playerList) &&
 				Arrays.equals(teams, that.teams);
@@ -148,7 +149,7 @@ public class VaultyScoreboard {
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(scoreboard, objective, playerList);
+		int result = Objects.hash(bukkitScoreboard, objective, playerList);
 		result = 31 * result + Arrays.hashCode(teams);
 		return result;
 	}

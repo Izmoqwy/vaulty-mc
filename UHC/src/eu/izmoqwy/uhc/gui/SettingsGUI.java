@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import eu.izmoqwy.uhc.config.GUIConfigurable;
 import eu.izmoqwy.uhc.config.GUISetting;
 import eu.izmoqwy.uhc.game.GameComposer;
+import eu.izmoqwy.uhc.game.TeamGameComposer;
 import eu.izmoqwy.vaulty.builder.ItemBuilder;
 import eu.izmoqwy.vaulty.gui.GUIListener;
 import eu.izmoqwy.vaulty.gui.VaultyInventory;
@@ -36,6 +37,12 @@ public class SettingsGUI extends VaultyInventory implements GUIListener {
 		List<Field> fields = ReflectionUtil.getFieldsAnnotatedWith(defaultComposerClass != null ? defaultComposerClass : configurable.getClass(), GUISetting.class);
 		Map<String, List<SettingValue>> groups = Maps.newLinkedHashMap();
 		for (Field field : fields) {
+			if (configurable instanceof TeamGameComposer) {
+				if ((field.getName().equals("teamSize") && !((TeamGameComposer) configurable).isTeamEditable())
+						|| field.getName().equals("teamEditable"))
+					continue;
+			}
+
 			field.setAccessible(true);
 			GUISetting setting = field.getAnnotation(GUISetting.class);
 			List<SettingValue> settings = groups.getOrDefault(setting.group(), Lists.newArrayList());
@@ -89,4 +96,5 @@ public class SettingsGUI extends VaultyInventory implements GUIListener {
 			}
 		}
 	}
+
 }
