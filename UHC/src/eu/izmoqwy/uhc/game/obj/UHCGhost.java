@@ -3,7 +3,7 @@
  * Plugin réalisé pour le serveur Minecraft Vaulty.
  */
 
-package eu.izmoqwy.uhc.game;
+package eu.izmoqwy.uhc.game.obj;
 
 import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;

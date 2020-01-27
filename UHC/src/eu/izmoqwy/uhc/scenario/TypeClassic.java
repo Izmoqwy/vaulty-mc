@@ -13,7 +13,7 @@ import eu.izmoqwy.uhc.event.registration.UHCEventPriority;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
 import eu.izmoqwy.uhc.game.GameComposer;
 import eu.izmoqwy.uhc.game.GameManager;
-import eu.izmoqwy.uhc.game.UHCGame;
+import eu.izmoqwy.uhc.game.obj.UHCGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -70,6 +70,8 @@ class SettingValue {
 						field.setInt(configurable, Math.min(Math.max(newVal, setting.min()), setting.max()));
 						if (field.getName().equals("maxPlayers") && GameManager.get.getWaitingRoom() != null)
 							GameManager.get.getWaitingRoom().updatePlayerCount();
+						else if (field.getName().equals("teamSize") && GameManager.get.getWaitingRoom() != null)
+							GameManager.get.getWaitingRoom().updateTeams();
 					}
 					catch (IllegalAccessException e) {
 						e.printStackTrace();

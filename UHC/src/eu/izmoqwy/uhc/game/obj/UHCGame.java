@@ -3,7 +3,7 @@
  * Plugin réalisé pour le serveur Minecraft Vaulty.
  */
 
-package eu.izmoqwy.uhc.game;
+package eu.izmoqwy.uhc.game.obj;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -12,6 +12,8 @@ import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.event.player.PlayerAnyDamageUHCEvent;
 import eu.izmoqwy.uhc.event.registration.UHCEventHandler;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
+import eu.izmoqwy.uhc.game.GameComposer;
+import eu.izmoqwy.uhc.game.GameManager;
 import eu.izmoqwy.uhc.world.UHCWorldManager;
 import eu.izmoqwy.vaulty.utils.PlayerUtil;
 import lombok.Getter;

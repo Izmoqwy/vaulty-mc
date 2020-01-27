@@ -13,6 +13,9 @@ import eu.izmoqwy.uhc.event.registration.UHCEventManager;
 import eu.izmoqwy.uhc.event.world.WorldBlockBreakUHCEvent;
 import eu.izmoqwy.uhc.event.world.WorldBlockPlaceUHCEvent;
 import eu.izmoqwy.uhc.game.*;
+import eu.izmoqwy.uhc.game.obj.UHCGame;
+import eu.izmoqwy.uhc.game.obj.UHCGhost;
+import eu.izmoqwy.uhc.game.obj.WaitingRoom;
 import eu.izmoqwy.uhc.world.UHCWorldManager;
 import eu.izmoqwy.vaulty.VaultyCore;
 import eu.izmoqwy.vaulty.oss.OSS;
@@ -189,6 +192,9 @@ public class UHCBukkitListener implements Listener {
 			GameManager.get.getWaitingRoom().addPlayer(player, GameActor.PLAYER, false);
 			player.getInventory().setItem(8, WaitingRoom.WaitingItems.TOGGLE_SPECTATOR);
 			player.sendMessage(VaultyCore.PREFIX + "§eVous êtes désormais §aJoueur§e.");
+		}
+		else if (WaitingRoom.WaitingItems.TEAMS.equals(item)) {
+			GameManager.get.getWaitingRoom().getTeamGUI().open(player);
 		}
 	}
 

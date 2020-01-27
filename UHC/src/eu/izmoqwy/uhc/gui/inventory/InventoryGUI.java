@@ -8,7 +8,7 @@ package eu.izmoqwy.uhc.gui.inventory;
 import eu.izmoqwy.uhc.config.GUIConfigurable;
 import eu.izmoqwy.uhc.game.GameComposer;
 import eu.izmoqwy.uhc.game.GameManager;
-import eu.izmoqwy.uhc.game.WaitingRoom;
+import eu.izmoqwy.uhc.game.obj.WaitingRoom;
 import eu.izmoqwy.vaulty.builder.ItemBuilder;
 import eu.izmoqwy.vaulty.gui.GUIListener;
 import eu.izmoqwy.vaulty.gui.VaultyInventory;

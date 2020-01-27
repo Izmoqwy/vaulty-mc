@@ -7,7 +7,7 @@ package eu.izmoqwy.uhc.scenario;
 
 import eu.izmoqwy.uhc.game.GameComposer;
 import eu.izmoqwy.uhc.game.GameManager;
-import eu.izmoqwy.uhc.game.WaitingRoom;
+import eu.izmoqwy.uhc.game.obj.WaitingRoom;
 import lombok.Getter;
 import org.bukkit.Material;
 

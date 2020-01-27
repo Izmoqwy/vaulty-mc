@@ -8,7 +8,7 @@ package eu.izmoqwy.uhc.commands;
 import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.game.GameManager;
 import eu.izmoqwy.uhc.game.GameState;
-import eu.izmoqwy.uhc.game.Whitelist;
+import eu.izmoqwy.uhc.game.obj.Whitelist;
 import eu.izmoqwy.vaulty.VaultyCommand;
 import eu.izmoqwy.vaulty.VaultyCore;
 import eu.izmoqwy.vaulty.oss.OSS;

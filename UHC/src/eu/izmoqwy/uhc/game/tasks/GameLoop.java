@@ -7,7 +7,7 @@ package eu.izmoqwy.uhc.game.tasks;
 
 import com.google.common.collect.Lists;
 import eu.izmoqwy.uhc.game.GameComposer;
-import eu.izmoqwy.uhc.game.UHCGame;
+import eu.izmoqwy.uhc.game.obj.UHCGame;
 import eu.izmoqwy.uhc.world.UHCWorldManager;
 import eu.izmoqwy.vaulty.Procedure;
 import eu.izmoqwy.vaulty.scoreboard.VaultyScoreboard;
@@ -64,7 +64,7 @@ public class GameLoop extends BukkitRunnable {
 		scoreboard.setLine(7, "Dégâts: ", "§cDésactivé");
 		scoreboard.setLine(8, "Limites: §b" + gameComposer.getBorderInitialSize() + "§7x§b" + gameComposer.getBorderInitialSize());
 		scoreboard.setLine(9, " ");
-		scoreboard.setLine(10, "§e§m═§r §6§lvaul", "§6§lty.minesr.com");
+		scoreboard.setLine(10, "§e§m═§6§l vaulty", "§6§l.minesr.com");
 		game.getOnlinePlayers().forEach(scoreboard::addPlayer);
 		game.getOnlineSpectators().forEach(scoreboard::addPlayer);
 		currentScoreboard = scoreboard;

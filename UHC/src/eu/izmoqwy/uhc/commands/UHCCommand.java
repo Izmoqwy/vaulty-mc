@@ -9,7 +9,7 @@ import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.game.GameActor;
 import eu.izmoqwy.uhc.game.GameManager;
 import eu.izmoqwy.uhc.game.GameState;
-import eu.izmoqwy.uhc.game.UHCGame;
+import eu.izmoqwy.uhc.game.obj.UHCGame;
 import eu.izmoqwy.uhc.gui.composer.HostGUI;
 import eu.izmoqwy.uhc.gui.WorldPreGeneratorGUI;
 import eu.izmoqwy.uhc.scenario.GameType;

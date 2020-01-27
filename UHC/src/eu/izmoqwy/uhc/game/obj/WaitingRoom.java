@@ -3,12 +3,18 @@
  * Plugin réalisé pour le serveur Minecraft Vaulty.
  */
 
-package eu.izmoqwy.uhc.game;
+package eu.izmoqwy.uhc.game.obj;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import eu.izmoqwy.uhc.VaultyUHC;
+import eu.izmoqwy.uhc.game.GameActor;
+import eu.izmoqwy.uhc.game.GameManager;
+import eu.izmoqwy.uhc.game.PreMadeTeam;
+import eu.izmoqwy.uhc.game.TeamGameComposer;
 import eu.izmoqwy.uhc.gui.composer.ComposerGUI;
+import eu.izmoqwy.uhc.gui.composer.TeamGUI;
 import eu.izmoqwy.uhc.world.UHCWorldManager;
 import eu.izmoqwy.vaulty.builder.ItemBuilder;
 import eu.izmoqwy.vaulty.nms.NMS;
@@ -24,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Getter
@@ -32,14 +39,21 @@ public class WaitingRoom {
 	@Getter(AccessLevel.NONE)
 	private GameManager gameManager;
 	private ComposerGUI composerGUI;
+	private TeamGUI teamGUI;
 
 	private VaultyScoreboard scoreboard;
 	private List<Player> players = Lists.newArrayList(),
 			spectators = Lists.newArrayList();
 
+	private LinkedHashMap<PreMadeTeam, List<Player>> teams;
+
 	public WaitingRoom(GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.composerGUI = new ComposerGUI(gameManager.getCurrentComposer());
+
+		if (gameManager.getCurrentComposer() instanceof TeamGameComposer)
+			teams = Maps.newLinkedHashMap();
+		this.teamGUI = new TeamGUI((TeamGameComposer) gameManager.getCurrentComposer(), this);
 
 		scoreboard = new VaultyScoreboard("uhc-waitingroom", gameManager.getCurrentComposer().getGameTitle());
 		scoreboard.reset(11);
@@ -50,8 +64,9 @@ public class WaitingRoom {
 		scoreboard.setLine(4, " ");
 		scoreboard.setLine(5, "§e§lJoueurs:");
 		updatePlayerCount();
-		scoreboard.setLine(9, " ");;
-		scoreboard.setLine(10, "§e§m═§r §6§lvaul", "§6§lty.minesr.com");
+		scoreboard.setLine(9, " ");
+
+		scoreboard.setLine(10, "§e§m═§6§l vaulty", "§6§l.minesr.com");
 	}
 
 	public void addPlayer(Player player, GameActor actorType, boolean forceTeleport) {
@@ -123,6 +138,8 @@ public class WaitingRoom {
 			inventory.setItem(0, ComposingItems.CONFIG);
 			inventory.setItem(1, ComposingItems.START);
 		}
+		if (teams != null)
+			inventory.setItem(4, WaitingItems.TEAMS);
 		if (spectators.contains(player))
 			inventory.setItem(8, WaitingItems.TOGGLE_PLAYER);
 		else
@@ -133,6 +150,49 @@ public class WaitingRoom {
 		scoreboard.setLine(6, "État: " + (gameManager.getWhitelist() != null && gameManager.getWhitelist().isEnabled() ? "§dWhitelist" : "§aOuvert"));
 		scoreboard.setLine(7, "Attente: ", "§a" + players.size() + "/" + gameManager.getCurrentComposer().getMaxPlayers());
 		scoreboard.setLine(8, "Spectateurs: ", "§7" + spectators.size());
+
+		updateTeams();
+	}
+
+	public void updateTeams() {
+		if (!(gameManager.getCurrentComposer() instanceof TeamGameComposer))
+			return;
+
+		int teamSize = ((TeamGameComposer) gameManager.getCurrentComposer()).getTeamSize();
+		int teamsCount = (int) Math.ceil(gameManager.getCurrentComposer().getMaxPlayers() * 1f / ((TeamGameComposer) gameManager.getCurrentComposer()).getTeamSize());
+		int previousRows = Math.max(1, (int) Math.ceil(teams.size() / 1d));
+
+		if (teamsCount > teams.size()) {
+			PreMadeTeam lastTeam = getLastTeam();
+			while (teamsCount > teams.size()) {
+				PreMadeTeam team = PreMadeTeam.next(lastTeam);
+				teams.put(team, Lists.newArrayList());
+				lastTeam = team;
+			}
+		}
+		else if (teamsCount < teams.size()) {
+			while (teamsCount < teams.size()) {
+				teams.remove(getLastTeam());
+			}
+		}
+
+		for (PreMadeTeam team : teams.keySet()) {
+			List<Player> players;
+			while ((players = teams.get(team)).size() > teamSize) {
+				teams.get(team).remove(players.size() - 1);
+			}
+		}
+
+		int newRows = Math.max(1, (int) Math.ceil(teams.size() / 1d));
+		teamGUI.update(newRows != previousRows);
+	}
+
+	private PreMadeTeam getLastTeam() {
+		return getTeam(teams.size() - 1);
+	}
+
+	public PreMadeTeam getTeam(int index) {
+		return index >= 0 && teams.size() > index ? teams.keySet().toArray(new PreMadeTeam[0])[index] : null;
 	}
 
 	public void updateDebugInfoState() {
@@ -142,18 +202,27 @@ public class WaitingRoom {
 	}
 
 	public static class ComposingItems {
+
 		public static final ItemStack CONFIG = new ItemBuilder(Material.COMMAND)
 				.name("§e§lConfigurer").appendLore("§7Changez les paramètres de partie, gérez", "§7les scénarios et modifiez l'inventaire")
 				.toItemStack(), START = new ItemBuilder(Material.REDSTONE)
 				.name("§a§lLancer").appendLore("§7La partie est prête ? Lancez la !")
 				.toItemStack();
+
 	}
 
 	public static class WaitingItems {
+
 		public static final ItemStack TOGGLE_PLAYER = new ItemBuilder(SkullType.SKELETON)
 				.name("§6Acteur de jeu").appendLore("§eVous êtes §7Spectateur§e.", " ", "§7§oCliquez pour devenir joueur")
 				.toItemStack(), TOGGLE_SPECTATOR = new ItemBuilder(SkullType.PLAYER)
 				.name("§6Acteur de jeu").appendLore("§eVous êtes §aJoueur§e.", " ", "§7§oCliquez pour devenir spectateur")
 				.toItemStack();
+
+		public static final ItemStack TEAMS = new ItemBuilder(Material.BANNER)
+				.name("§7Choisir une équipe").appendLore("§7Il est normal que les teams ne soit pas", "§7affichées dans le tab du lobby.")
+				.toItemStack();
+
 	}
+
 }

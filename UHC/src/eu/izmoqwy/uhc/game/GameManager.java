@@ -12,6 +12,9 @@ import com.google.common.collect.Queues;
 import eu.izmoqwy.uhc.VaultyUHC;
 import eu.izmoqwy.uhc.event.registration.UHCEventManager;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
+import eu.izmoqwy.uhc.game.obj.UHCGame;
+import eu.izmoqwy.uhc.game.obj.WaitingRoom;
+import eu.izmoqwy.uhc.game.obj.Whitelist;
 import eu.izmoqwy.uhc.game.tasks.GameLoop;
 import eu.izmoqwy.uhc.game.tasks.StartingTask;
 import eu.izmoqwy.uhc.game.tasks.TeleportingTask;
@@ -259,6 +262,10 @@ public class GameManager {
 
 	public List<String> getCompositionStackTrace() {
 		List<String> stacktrace = Lists.newArrayList();
+
+		if (waitingRoom.getPlayers().size() < 2) {
+			stacktrace.add("Il doit y avoir au moins 2 joueurs.");
+		}
 
 		if (currentComposer.getPvpStartsAt() <= currentComposer.getInvincibilityStopsAt()) {
 			stacktrace.add("Le PvP ne peut pas être activé avant la fin de l'invincibilité");
