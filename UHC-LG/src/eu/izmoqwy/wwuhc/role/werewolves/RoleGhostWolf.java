@@ -17,6 +17,6 @@ public class RoleGhostWolf extends Role {
 		super("Loup Fantôme", createDescription(
 				"Vous disposez de l'effet Invisibility, Night Vision et Strength I durant la nuit. Vous gagnerez deux coeurs d'absorptions et l'effet Speed I pendant une minute lors d'un meurtre."
 		), new MaterialData(Material.WEB), RoleSide.WEREWOLF);
-		this.nightlyEffects = new PotionEffectType[]{PotionEffectType.INVISIBILITY, PotionEffectType.INCREASE_DAMAGE, PotionEffectType.NIGHT_VISION};
+		this.nightlyEffects = new PotionEffectType[]{PotionEffectType.INVISIBILITY, PotionEffectType.NIGHT_VISION};
 	}
 }

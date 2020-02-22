@@ -180,7 +180,7 @@ public class GameManager {
 		Preconditions.checkNotNull(player);
 		if (OSS.getServer(player) != VaultyUHC.getUhcServer())
 			OSS.send(player, VaultyUHC.getUhcServer());
-		if (player.isDead())
+		if (player.isDead() || player.getHealth() <= 0)
 			player.spigot().respawn();
 		player.teleport(new Location(UHCWorldManager.getUhcWorld(), 0, 231.1, 0));
 	}

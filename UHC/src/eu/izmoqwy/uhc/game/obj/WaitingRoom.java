@@ -44,14 +44,15 @@ public class WaitingRoom {
 	private TeamGUI teamGUI;
 
 	private VaultyScoreboard scoreboard;
-	private List<Player> players = Lists.newArrayList(),
-			spectators = Lists.newArrayList();
+	private List<Player> players, spectators;
 
 	private LinkedHashMap<PreMadeTeam, List<OfflinePlayer>> teams;
 
 	public WaitingRoom(GameManager gameManager) {
 		this.gameManager = gameManager;
 		this.composerGUI = new ComposerGUI(gameManager.getCurrentComposer());
+		players = Lists.newArrayList();
+		spectators = Lists.newArrayList();
 
 		if (gameManager.getCurrentComposer() instanceof TeamGameComposer) {
 			teams = Maps.newLinkedHashMap();
@@ -86,6 +87,7 @@ public class WaitingRoom {
 			removePlayerFromTeamGUI(player);
 			spectators.add(player);
 		}
+
 		if (forceTeleport || player.getWorld() != UHCWorldManager.getUhcWorld())
 			sendToWaitingRoom(player);
 		scoreboard.addPlayer(player);
@@ -112,6 +114,9 @@ public class WaitingRoom {
 	}
 
 	public void removePlayerFromTeamGUI(OfflinePlayer player) {
+		if (!(gameManager.getCurrentComposer() instanceof TeamGameComposer))
+			return;
+
 		for (Map.Entry<PreMadeTeam, List<OfflinePlayer>> entry : getTeams().entrySet()) {
 			PreMadeTeam itTeam = entry.getKey();
 

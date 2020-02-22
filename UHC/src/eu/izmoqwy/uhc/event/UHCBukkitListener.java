@@ -232,7 +232,18 @@ public class UHCBukkitListener implements Listener {
 		else if (checkGameState(event.getPlayer(), PLAYING)) {
 			PlayerInteractUHCEvent uhcEvent = new PlayerInteractUHCEvent(event);
 			UHCEventManager.fireEvent(uhcEvent);
-			event.setCancelled(uhcEvent.isCancelled());
+			if (uhcEvent.isCancelled())
+				uhcEvent.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onInteractEntity(PlayerInteractEntityEvent event) {
+		if (checkGameState(event.getPlayer(), PLAYING)) {
+			PlayerInteractEntityUHCEvent uhcEvent = new PlayerInteractEntityUHCEvent(event);
+			UHCEventManager.fireEvent(uhcEvent);
+			if (uhcEvent.isCancelled())
+				uhcEvent.setCancelled(true);
 		}
 	}
 

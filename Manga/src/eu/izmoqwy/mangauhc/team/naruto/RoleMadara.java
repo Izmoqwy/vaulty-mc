@@ -11,7 +11,7 @@ public class RoleMadara extends MangaRole {
 	public RoleMadara() {
 		super("Madara", createDescription(
 				"Vous êtes Madara vous devez gagner avec votre nouvelle équipe, pour ce faire vous avez un livre Sharpness III " +
-						"et qu'un livre Protection III ainsi que 2 coeur en" + " plus."
+						"et qu'un livre Protection III ainsi que 2 coeurs en plus."
 		), true);
 		this.startingContent = new ItemStack[]{
 				new ItemBuilder(Enchantment.DAMAGE_ALL, 3).toItemStack(),

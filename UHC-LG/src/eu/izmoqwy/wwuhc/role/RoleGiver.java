@@ -27,9 +27,9 @@ public class RoleGiver {
 
 		Map<UUID, Role> appliedRoles = Maps.newHashMap();
 		for (Role role : roles) {
-			if (role.isApplicable(RoleWerewolf.class)) {
+			if (role.getClass() == RoleWerewolf.class) {
 				for (int i = 0; i < ((RoleWerewolf) role).getAmount(); i++) {
-					appliedRoles.put(players.remove(0), role);
+					appliedRoles.put(players.remove(0), new RoleWerewolf());
 				}
 			}
 			else {
@@ -37,7 +37,8 @@ public class RoleGiver {
 			}
 		}
 
-		final RoleVillager roleVillager = (RoleVillager) roles.stream().filter(role -> role.isApplicable(RoleVillager.class)).collect(Collectors.toList()).get(0);
+		List<Role> matchingRole = roles.stream().filter(role -> role.isApplicable(RoleVillager.class)).collect(Collectors.toList());
+		final RoleVillager roleVillager = matchingRole.isEmpty() ? new RoleVillager() : (RoleVillager) matchingRole.get(0);
 		players.stream().filter(player -> !appliedRoles.containsKey(player)).forEach(player -> appliedRoles.put(player, roleVillager));
 
 		return appliedRoles;

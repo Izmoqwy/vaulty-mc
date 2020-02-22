@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 import java.util.Map;
@@ -93,14 +94,14 @@ public abstract class VaultyCommand implements CommandExecutor, TabCompleter {
 		return false;
 	}
 
+	@Contract("false, _ -> fail")
 	protected void checkArgument(boolean valid, String message) {
 		if (!valid)
 			throw new CommandException(message);
 	}
 
 	protected void missingArg(String[] args, int index, String needed) {
-		if (args.length <= index)
-			throw new CommandException("Argument manquant en position " + (index + 1) + ": " + needed);
+		checkArgument(args.length > index, "Argument manquant en position " + (index + 1) + ": " + needed);
 	}
 
 	protected Player getTarget(String[] args, int index, String needed) {

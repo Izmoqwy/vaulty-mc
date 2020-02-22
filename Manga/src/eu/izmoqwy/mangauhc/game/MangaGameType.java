@@ -6,13 +6,17 @@ import eu.izmoqwy.mangauhc.MangaUHC;
 import eu.izmoqwy.mangauhc.team.MangaRole;
 import eu.izmoqwy.mangauhc.team.MangaTeam;
 import eu.izmoqwy.mangauhc.team.dbz.*;
+import eu.izmoqwy.mangauhc.team.fairy.*;
 import eu.izmoqwy.mangauhc.team.inazuma.TeamInazuma;
 import eu.izmoqwy.mangauhc.team.naruto.RoleMadara;
 import eu.izmoqwy.mangauhc.team.naruto.TeamNaruto;
 import eu.izmoqwy.mangauhc.team.onepiece.RoleNami;
 import eu.izmoqwy.mangauhc.team.onepiece.TeamOnePiece;
+import eu.izmoqwy.mangauhc.team.onepunch.RoleSaitama;
+import eu.izmoqwy.mangauhc.team.onepunch.TeamOnePunch;
 import eu.izmoqwy.mangauhc.team.pokemon.RolePierre;
 import eu.izmoqwy.mangauhc.team.pokemon.TeamPokemon;
+import eu.izmoqwy.mangauhc.team.titans.TeamTitans;
 import eu.izmoqwy.uhc.event.player.*;
 import eu.izmoqwy.uhc.event.registration.UHCEventHandler;
 import eu.izmoqwy.uhc.event.registration.UHCEventPriority;
@@ -25,11 +29,14 @@ import eu.izmoqwy.uhc.game.obj.UHCTeamGame;
 import eu.izmoqwy.uhc.game.obj.WaitingRoom;
 import eu.izmoqwy.uhc.scenario.GameType;
 import eu.izmoqwy.vaulty.utils.ItemUtil;
+import eu.izmoqwy.vaulty.utils.MathUtil;
 import eu.izmoqwy.vaulty.utils.PlayerUtil;
 import lombok.Getter;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,6 +46,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -86,7 +94,10 @@ public class MangaGameType extends GameType implements UHCListener {
 				new TeamNaruto(),
 				new TeamInazuma(),
 				new TeamOnePiece(),
-				new TeamPokemon()
+				new TeamPokemon(),
+				new TeamOnePunch(),
+				new TeamFairyTail(),
+				new TeamTitans()
 		);
 		Collections.shuffle(originalTeamList);
 
@@ -201,6 +212,7 @@ public class MangaGameType extends GameType implements UHCListener {
 
 		tasks.add(teamAnnouncementTask);
 		tasks.add(roleAnnouncementTask);
+		GameManager.get.getGameLoop().setExtra(this::onGameLoop);
 	}
 
 	@Override
@@ -284,6 +296,38 @@ public class MangaGameType extends GameType implements UHCListener {
 		return MangaUHC.PREFIX;
 	}
 
+	private void onGameLoop() {
+		Map.Entry<OfflinePlayer, MangaRole> grev = getByRole(RoleGrev.class);
+		if (grev != null && grev.getKey() instanceof Player) {
+			Player grevPlayer = (Player) grev.getKey();
+			if (grevPlayer.getLocation().getBlock().getType() == Material.WATER
+					|| grevPlayer.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+				PlayerUtil.giveEffect(grevPlayer, PotionEffectType.DAMAGE_RESISTANCE, (short) 0, (short) 3, true);
+			}
+		}
+
+		Map.Entry<OfflinePlayer, MangaRole> natsu = getByRole(RoleNatsu.class);
+		if (natsu != null && natsu.getKey() instanceof Player) {
+			Player natsuPlayer = (Player) natsu.getKey();
+			if (natsuPlayer.getFireTicks() > 0) {
+				PlayerUtil.giveEffect(natsuPlayer, PotionEffectType.DAMAGE_RESISTANCE, (short) 0, (short) 3, true);
+			}
+		}
+
+		Map.Entry<OfflinePlayer, MangaRole> lucy = getByRole(RoleLucy.class);
+		if (lucy != null && lucy.getKey() instanceof Player) {
+			Player lucyPlayer = (Player) lucy.getKey();
+			Location lucyLocation = lucyPlayer.getLocation();
+			for (Map.Entry<Player, MangaRole> teamMate : getOnlineTeamMates(lucyPlayer)) {
+				Location mateLocation = teamMate.getKey().getLocation();
+				if (MathUtil.getDistanceY(lucyLocation.getY(), mateLocation.getY()) <= 5 && MathUtil.getDistanceXZ(mateLocation, lucyLocation) >= 10) {
+					PlayerUtil.giveEffect(lucyPlayer, PotionEffectType.DAMAGE_RESISTANCE, (short) 1, (short) 3, true);
+					break;
+				}
+			}
+		}
+	}
+
 	/*
 	Utils
 	 */
@@ -356,6 +400,18 @@ public class MangaGameType extends GameType implements UHCListener {
 		roleMap.forEach(((player1, role) -> {
 			if (role.getParent().equals(team) && !player.equals(player1))
 				list.add(Maps.immutableEntry(player1, role));
+		}));
+
+		return list;
+	}
+
+	public List<Map.Entry<Player, MangaRole>> getOnlineTeamMates(Player player) {
+		List<Map.Entry<Player, MangaRole>> list = Lists.newArrayList();
+
+		MangaTeam team = getRole(player).getParent();
+		roleMap.forEach(((player1, role) -> {
+			if (player1.isOnline() && role.getParent().equals(team) && !player.equals(player1))
+				list.add(Maps.immutableEntry(player1.getPlayer(), role));
 		}));
 
 		return list;
@@ -434,6 +490,29 @@ public class MangaGameType extends GameType implements UHCListener {
 	}
 
 	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)
+	public void onInteractEntity(PlayerInteractEntityUHCEvent event) {
+		MangaRole role = getRole(event.getPlayer());
+		if (role instanceof RoleSaitama) {
+			PlayerInteractEntityEvent bukkitEvent = event.getBukkitEvent();
+			Player player = event.getPlayer();
+			if (player.getItemInHand() != null && player.getItemInHand().getType() == Material.BRICK) {
+				RoleSaitama roleSaitama = (RoleSaitama) role;
+				if (player.getItemInHand().equals(roleSaitama.getPunchItem()) && roleSaitama.getRemaining() > 0) {
+					Entity targetEntity = bukkitEvent.getRightClicked();
+					if (targetEntity instanceof Player) {
+						Player targetPlayer = (Player) targetEntity;
+						targetPlayer.damage(targetPlayer.getHealth() / 2f);
+						targetPlayer.sendMessage(getPrefix() + "§2Vous avez reçu un coup de poing !");
+
+						player.sendMessage(getPrefix() + "§aCoup de poing !");
+						roleSaitama.setRemaining(roleSaitama.getRemaining() - 1);
+					}
+				}
+			}
+		}
+	}
+
+	@UHCEventHandler(priority = UHCEventPriority.GAME_TYPE)
 	public void onPlayerAnyDamage(PlayerAnyDamageUHCEvent event) {
 		if (event.getBukkitEvent().getCause() == EntityDamageEvent.DamageCause.FALL) {
 			if (getRole(event.getPlayer()) instanceof RolePierre)
@@ -462,7 +541,6 @@ public class MangaGameType extends GameType implements UHCListener {
 				return;
 			}
 		}
-
 		else if (role instanceof RoleGoku) {
 			if (killer != null && getRole(killer) instanceof RoleFreezer) {
 				PlayerUtil.giveEffect(killer, PotionEffectType.INCREASE_DAMAGE, (short) 1, (short) 20_000);
@@ -471,6 +549,11 @@ public class MangaGameType extends GameType implements UHCListener {
 			Map.Entry<OfflinePlayer, MangaRole> gohan = getByRole(RoleGohan.class);
 			if (gohan != null) {
 				doOrWaitReconnect(gohan.getKey(), gohanPlayer -> PlayerUtil.giveEffect(gohanPlayer, PotionEffectType.INCREASE_DAMAGE, (short) 0, (short) 20_000));
+			}
+		}
+		else if (role instanceof RoleNatsu) {
+			if (killer != null && getRole(killer) instanceof RoleZelephNoire) {
+				PlayerUtil.giveEffect(killer, getRandomEffect(), (short) 1, (short) 20_000);
 			}
 		}
 		else if (role instanceof RoleMadara) {
@@ -496,6 +579,7 @@ public class MangaGameType extends GameType implements UHCListener {
 				if (!role.isWicked())
 					checkTeamEliminate(role.getParent());
 				game.spectate(event.getPlayer());
+				checkForWin();
 			}
 		}.runTaskLater(MangaUHC.getInstance(), 2);
 	}
@@ -503,6 +587,12 @@ public class MangaGameType extends GameType implements UHCListener {
 	private void death(OfflinePlayer player) {
 		MangaRole role = roleMap.get(player);
 		game.broadcast(role.getParent().getColor() + player.getName() + " §eest mort.");
+	}
+
+	public PotionEffectType getRandomEffect() {
+		PotionEffectType[] types = new PotionEffectType[]{PotionEffectType.INCREASE_DAMAGE, PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.SPEED,
+				PotionEffectType.JUMP};
+		return types[new Random().nextInt(types.length)];
 	}
 
 }

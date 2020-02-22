@@ -35,13 +35,20 @@ public class UHCGame implements UHCListener {
 
 	private Player lastEliminated;
 
-	private List<Player> onlinePlayers = Lists.newArrayList(), onlineSpectators = Lists.newArrayList();
+	private List<Player> onlinePlayers, onlineSpectators;
 
-	private Map<UUID, UHCGhost> ghosts = Maps.newHashMap();
-	private List<UUID> killedGhost = Lists.newArrayList();
+	private Map<UUID, UHCGhost> ghosts;
+	private List<UUID> killedGhost;
 
 	@Setter
 	private boolean teleporting, invincibility;
+
+	public UHCGame() {
+		onlinePlayers = Lists.newArrayList();
+		onlineSpectators = Lists.newArrayList();
+		ghosts = Maps.newHashMap();
+		killedGhost = Lists.newArrayList();
+	}
 
 	public GameComposer getGameComposer() {
 		return GameManager.get.getCurrentComposer();
@@ -53,11 +60,9 @@ public class UHCGame implements UHCListener {
 		}
 	}
 
-	private void eliminatePlayer(Player player, boolean canSpec) {
+	private void eliminatePlayer(Player player) {
 		if (onlinePlayers.remove(player)) {
 			lastEliminated = player;
-			if (canSpec)
-				spectate(player);
 			eliminatePlayer(player.getUniqueId());
 			playerDeathSound();
 		}
@@ -85,12 +90,9 @@ public class UHCGame implements UHCListener {
 	}
 
 	public void spectate(Player player) {
-		if (onlinePlayers.contains(player)) {
-			eliminatePlayer(player, false);
-			return;
-		}
-
+		eliminatePlayer(player);
 		onlineSpectators.add(player);
+
 		PlayerUtil.reset(player);
 		GameManager.get.teleportToMiddle(player);
 		player.setGameMode(GameMode.SPECTATOR);
@@ -98,10 +100,8 @@ public class UHCGame implements UHCListener {
 
 	public void turnToGhost(Player player) {
 		Preconditions.checkNotNull(player);
-		if (!onlinePlayers.contains(player))
+		if (!onlinePlayers.remove(player))
 			return;
-
-		onlinePlayers.remove(player);
 
 		Villager ghost = (Villager) UHCWorldManager.getUhcWorld().spawnEntity(player.getLocation(), EntityType.VILLAGER);
 		ghost.setCustomName("§c" + player.getName());

@@ -14,7 +14,9 @@ import eu.izmoqwy.uhc.event.registration.UHCEventPriority;
 import eu.izmoqwy.uhc.event.registration.UHCListener;
 import eu.izmoqwy.uhc.event.world.WorldBlockBreakUHCEvent;
 import eu.izmoqwy.uhc.event.world.WorldBlockPlaceUHCEvent;
-import eu.izmoqwy.uhc.game.*;
+import eu.izmoqwy.uhc.game.GameComposer;
+import eu.izmoqwy.uhc.game.GameManager;
+import eu.izmoqwy.uhc.game.GameState;
 import eu.izmoqwy.uhc.game.obj.UHCGame;
 import eu.izmoqwy.uhc.game.obj.UHCGhost;
 import eu.izmoqwy.uhc.game.obj.WaitingRoom;
@@ -93,14 +95,7 @@ public class WWGameType extends GameType implements UHCListener {
 		roleTask = new BukkitRunnable() {
 			@Override
 			public void run() {
-				List<Role> roles = WWGameType.this.gameComposer.getRoles();
-				RoleVillager villager = new RoleVillager();
-				if (!roles.contains(villager)) {
-					villager.setNeeded(false);
-					roles.add(villager);
-				}
-
-				roleMap = RoleGiver.attribute(roles, WWGameType.this.game.getLivingPlayers());
+				roleMap = RoleGiver.attribute(Lists.newArrayList(WWGameType.this.gameComposer.getRoles()), WWGameType.this.game.getLivingPlayers());
 				WWGameType.this.onRolesGiven();
 			}
 		};
